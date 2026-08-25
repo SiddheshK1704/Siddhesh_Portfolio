@@ -12,6 +12,9 @@
   --color-foreground: #f3f3f1;
   --color-muted: #8c8c92;
   --color-accent: #3355ff;
+  --color-accent-rgb: 51, 85, 255; /* same color as --color-accent, as
+    an R, G, B triplet so it can be used inside rgba() for opacity
+    control, e.g. the cursor glow below. */
   --color-accent-dim: #1c2b80;
   --color-border: #1e1e22;
 
@@ -112,6 +115,32 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Cursor-reactive glow (see components/ui/CursorGlow.tsx). The
+   actual x/y position comes from --spot-x/--spot-y, updated on every
+   mouse move; the gradient itself just reads those variables, so
+   CSS handles the visual repaint without any React re-render.
+   Falls back to a fixed, still-subtle position if JS hasn't set the
+   variables yet (e.g. before first mouse move, or on touch devices). */
+.cursor-glow {
+  background: radial-gradient(
+    250px circle at var(--spot-x, 50%) var(--spot-y, 30%),
+    rgba(var(--color-accent-rgb), 0.15),
+    transparent 70%
+  );
+  transition: background 0.2s ease-out;
+}
+
+/* Film grain: a barely-visible noise texture over the whole site.
+   Generated with an inline SVG feTurbulence filter (no image file,
+   no extra HTTP request) and rendered as a fixed full-viewport
+   overlay in layout.tsx. mix-blend-mode: overlay lets it interact
+   with colors underneath instead of just sitting as flat grey. */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  mix-blend-mode: overlay;
 }
 
 /* Visible focus states for keyboard navigation.

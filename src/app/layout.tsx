@@ -28,6 +28,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Decorative noise texture over the entire site. z-40 keeps
+            it above page content but below the navbar (z-50).
+            pointer-events-none + aria-hidden: purely visual, never
+            intercepts clicks or gets announced to screen readers. */}
+        <div
+          aria-hidden
+          className="grain-overlay fixed inset-0 z-40 pointer-events-none"
+        />
         <SmoothScroll>
           <Navbar />
           {children}
