@@ -21,7 +21,10 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 flex justify-center pt-4 px-4">
+    <header
+      data-lenis-prevent
+      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-4 px-4"
+    >
       <nav
         className={cn(
           "w-full max-w-5xl flex items-center justify-between",

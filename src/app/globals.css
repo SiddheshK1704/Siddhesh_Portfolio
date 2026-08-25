@@ -51,8 +51,14 @@
   border-color: var(--color-border);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Lenis's own stylesheet sets `html.lenis { height: auto }`, which
+   has HIGHER CSS specificity (element + class) than our Tailwind
+   `h-full` utility (a single class), so it was silently winning and
+   overriding our intended full-height layout. Re-asserting it here,
+   using the same specificity, guarantees our layout wins instead. */
+html.lenis,
+html.lenis body {
+  height: 100%;
 }
 
 body {
