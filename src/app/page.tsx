@@ -1,13 +1,11 @@
 import { Hero } from "@/components/hero/Hero";
+import { SelectedWork } from "@/components/projects/SelectedWork";
 
 export default function Home() {
   return (
     <main className="flex flex-col">
       <Hero />
-
-      <section id="work" className="min-h-screen flex items-center px-8">
-        <h2 className="text-h1">WORK (placeholder — Phase 6)</h2>
-      </section>
+      <SelectedWork />
 
       <section id="about" className="min-h-screen flex items-center px-8">
         <h2 className="text-h1">ABOUT (placeholder — Phase 8)</h2>

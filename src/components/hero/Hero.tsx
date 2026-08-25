@@ -11,7 +11,7 @@ export function Hero() {
         <p className="text-eyebrow">AI/ML &amp; Software Engineering</p>
 
         <h1 className="text-display">
-          SID
+          SIDDHESH
           <br />
           KHANKHOJE
         </h1>
