@@ -16,13 +16,14 @@ export function SelectedWork() {
           (md:col-span-2, set inside ProjectCard), compact ones
           take a single column — this is what creates the varied
           rhythm instead of a uniform grid of identical boxes. */}
+      {/* TEMPORARY: this grid is fully replaced by ProjectDepthStack
+          in Phase D. Keeping it functional in the meantime (all
+          cards "compact" now that `featured` is gone) so the site
+          stays buildable between phases. */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project, index) => (
           <Reveal key={project.slug} delay={index * 0.08}>
-            <ProjectCard
-              project={project}
-              variant={project.featured ? "featured" : "compact"}
-            />
+            <ProjectCard project={project} variant="compact" />
           </Reveal>
         ))}
       </div>

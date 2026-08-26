@@ -11,13 +11,19 @@ export type Project = {
   tech: string[];
   githubUrl: string;
   demoUrl?: string;
-  featured?: boolean;
 };
 
 // Single source of truth for every project shown on the site.
 // Content here is drawn directly from each project's real README —
 // nothing invented. Update this file, not the components, when
 // project details change.
+//
+// Order matters here: the Project Depth Stack (Phase D) presents
+// projects in exactly this array order — LawTalk, Energy Prediction,
+// Launch Control, Slipstream, per the v2 spec. The old `featured`
+// flag from the v1 card-grid design is gone; the depth-shift
+// presentation gives every project equal full-screen treatment, so
+// there's no longer a "large vs compact" distinction to encode.
 export const projects: Project[] = [
   {
     slug: "lawtalk",
@@ -44,26 +50,6 @@ export const projects: Project[] = [
       "GSAP",
     ],
     githubUrl: "https://github.com/SiddheshK1704/LawTalk-AI_RAG_Chatbot",
-    featured: true,
-  },
-  {
-    slug: "launch-control",
-    title: "Launch Control",
-    tagline: "Physics-based launch control simulator",
-    summary:
-      "A pure-software simulation comparing an open-loop F1-style clutch launch against a closed-loop PID wheel-slip regulator — no hardware, just tire physics and control theory.",
-    tags: ["Python", "Control Theory", "Simulation"],
-    problem:
-      "Electronic launch and traction control were banned in Formula 1 in 2008, leaving drivers to manage wheelspin manually via clutch release. This project asks: how much faster is a standing start with a closed-loop slip regulator, and what actually goes wrong when you try to build one?",
-    approach:
-      "Model the tire, wheel and vehicle as coupled physical systems, then implement two launch strategies on top: a fixed-ramp open-loop clutch release, and a PID controller that measures wheel slip in real time and cuts (never adds) torque to hold it near the tire's optimum.",
-    architecture:
-      "A Pacejka 'magic formula' tire model maps slip ratio to a friction coefficient. A vehicle/wheel dynamics model couples two rotating and translating masses through the tire contact patch, with a low-speed floor to avoid a singularity in the slip-ratio formula at a dead stop. The PID slip controller includes anti-windup (a leaky integrator) and torque rate-limiting to model realistic actuator behavior. A CLI runs both strategies and plots the comparison.",
-    outcome:
-      "Documented, genuinely instructive failure modes hit during development: a naive PID that adds torque early in a launch makes wheelspin worse rather than better; integral windup can stall the controller for seconds without a leaky integrator; and the stiff tire/wheel coupling near zero slip requires a very small simulation timestep (20kHz) to stay numerically stable with explicit integration.",
-    tech: ["Python", "NumPy", "Matplotlib", "PID Control", "pytest"],
-    githubUrl: "https://github.com/SiddheshK1704/Launch-Control-Project",
-    featured: true,
   },
   {
     slug: "energy-prediction",
@@ -83,6 +69,24 @@ export const projects: Project[] = [
     tech: ["Python", "TensorFlow/Keras", "Pandas", "NumPy", "Scikit-Learn"],
     githubUrl:
       "https://github.com/SiddheshK1704/Energy_Prediction_LSTM_Minor_Project",
+  },
+  {
+    slug: "launch-control",
+    title: "Launch Control",
+    tagline: "Physics-based launch control simulator",
+    summary:
+      "A pure-software simulation comparing an open-loop F1-style clutch launch against a closed-loop PID wheel-slip regulator — no hardware, just tire physics and control theory.",
+    tags: ["Python", "Control Theory", "Simulation"],
+    problem:
+      "Electronic launch and traction control were banned in Formula 1 in 2008, leaving drivers to manage wheelspin manually via clutch release. This project asks: how much faster is a standing start with a closed-loop slip regulator, and what actually goes wrong when you try to build one?",
+    approach:
+      "Model the tire, wheel and vehicle as coupled physical systems, then implement two launch strategies on top: a fixed-ramp open-loop clutch release, and a PID controller that measures wheel slip in real time and cuts (never adds) torque to hold it near the tire's optimum.",
+    architecture:
+      "A Pacejka 'magic formula' tire model maps slip ratio to a friction coefficient. A vehicle/wheel dynamics model couples two rotating and translating masses through the tire contact patch, with a low-speed floor to avoid a singularity in the slip-ratio formula at a dead stop. The PID slip controller includes anti-windup (a leaky integrator) and torque rate-limiting to model realistic actuator behavior. A CLI runs both strategies and plots the comparison.",
+    outcome:
+      "Documented, genuinely instructive failure modes hit during development: a naive PID that adds torque early in a launch makes wheelspin worse rather than better; integral windup can stall the controller for seconds without a leaky integrator; and the stiff tire/wheel coupling near zero slip requires a very small simulation timestep (20kHz) to stay numerically stable with explicit integration.",
+    tech: ["Python", "NumPy", "Matplotlib", "PID Control", "pytest"],
+    githubUrl: "https://github.com/SiddheshK1704/Launch-Control-Project",
   },
   {
     slug: "slipstream",
