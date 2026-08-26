@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/navbar/Navbar";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
+import { IntroSequence } from "@/components/intro/IntroSequence";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -40,6 +41,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
           {children}
         </SmoothScroll>
+        {/* Mounted last, with z-[100] (above the navbar's z-50), so
+            it fully covers the real page underneath until it's done. */}
+        <IntroSequence />
       </body>
     </html>
   );
