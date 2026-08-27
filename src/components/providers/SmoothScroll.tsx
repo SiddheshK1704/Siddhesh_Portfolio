@@ -2,10 +2,44 @@
 
 import { useEffect } from "react";
 import { ReactLenis, useLenis } from "lenis/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Height of the floating navbar (approx), so scrolled-to sections
 // don't end up hidden underneath it.
 const SCROLL_OFFSET = -96;
+
+/**
+ * Bridges Lenis smooth-scroll with GSAP ScrollTrigger so
+ * pinned/scrubbed animations receive accurate scroll positions.
+ * Without this, ScrollTrigger's scrub progress may never reach
+ * 1.0 because Lenis's lerp interpolation asymptotically
+ * approaches the target scroll position.
+ */
+function LenisGSAPBridge() {
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (!lenis) return;
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(tickerCallback);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.off("scroll", ScrollTrigger.update);
+      gsap.ticker.remove(tickerCallback);
+    };
+  }, [lenis]);
+
+  return null;
+}
 
 /**
  * Intercepts clicks on same-page anchor links (href="#work" etc.)
@@ -60,12 +94,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         // "jump to this section" animation on anchor clicks.
         lerp: 0.1,
         smoothWheel: true,
+        autoRaf: false,
         // Lenis has this on by default, but being explicit: it
         // automatically falls back to near-native scrolling for users
         // with prefers-reduced-motion enabled at the OS level.
         respectReducedMotion: true,
       }}
     >
+      <LenisGSAPBridge />
       <SmoothAnchorLinks />
       {children}
     </ReactLenis>

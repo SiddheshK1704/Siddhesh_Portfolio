@@ -1,4 +1,5 @@
-import { ArrowUpRight, Code2 } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Code2 } from "lucide-react";
 import type { Project } from "@/data/projects";
 
 type ProjectPanelProps = {
@@ -14,7 +15,16 @@ export function ProjectPanel({ project, index }: ProjectPanelProps) {
       {/* Metadata */}
       <div className="flex flex-col gap-5 order-2 lg:order-1">
         <p className="text-eyebrow text-accent">{number}</p>
-        <h3 className="text-h1">{project.title}</h3>
+        <div className="flex items-baseline gap-3">
+          <h3 className="text-h1">{project.title}</h3>
+          <Link
+            href={`/work/${project.slug}`}
+            className="text-accent hover:text-foreground transition-colors"
+            aria-label={`View ${project.title} details`}
+          >
+            <ArrowRight size={18} />
+          </Link>
+        </div>
         <p className="text-body text-muted max-w-md">{project.summary}</p>
 
         <div className="flex flex-wrap gap-2 pt-1">
@@ -63,12 +73,7 @@ export function ProjectPanel({ project, index }: ProjectPanelProps) {
         >
           {number}
         </span>
-        <div className="relative z-10 flex flex-col items-center gap-3">
-          <div className="w-16 h-16 border border-accent rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-accent rounded-full" />
-          </div>
-          <p className="text-eyebrow">{project.tags[0]}</p>
-        </div>
+
       </div>
     </div>
   );

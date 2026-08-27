@@ -9,12 +9,8 @@ export function SelectedWork() {
     <section id="work" className="px-6 lg:px-16 py-24 flex flex-col gap-3">
       <Reveal>
         <div className="flex flex-col gap-3">
-          <p className="text-eyebrow">What I&apos;ve Built</p>
-          <h2 className="text-h1 leading-[0.95]">
-            SELECTED
-            <br />
-            WORK
-          </h2>
+          <p className="text-eyebrow">Work</p>
+          <h2 className="text-h1">What I&apos;ve Built</h2>
         </div>
       </Reveal>
     </section>
