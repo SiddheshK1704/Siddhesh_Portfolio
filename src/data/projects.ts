@@ -19,11 +19,11 @@ export type Project = {
 // project details change.
 //
 // Order matters here: the Project Depth Stack (Phase D) presents
-// projects in exactly this array order — LawTalk, Energy Prediction,
-// Launch Control, Slipstream, per the v2 spec. The old `featured`
-// flag from the v1 card-grid design is gone; the depth-shift
-// presentation gives every project equal full-screen treatment, so
-// there's no longer a "large vs compact" distinction to encode.
+// projects in exactly this array order — LawTalk, QuickSign,
+// Launch Control, Slipstream. The old `featured` flag from the v1
+// card-grid design is gone; the depth-shift presentation gives
+// every project equal full-screen treatment, so there's no longer
+// a "large vs compact" distinction to encode.
 export const projects: Project[] = [
   {
     slug: "lawtalk",
@@ -52,23 +52,23 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/SiddheshK1704/LawTalk-AI_RAG_Chatbot",
   },
   {
-    slug: "energy-prediction",
-    title: "Time Series Energy Prediction",
-    tagline: "LSTM-based electricity consumption forecasting",
+    slug: "quicksign",
+    title: "QuickSign",
+    tagline: "Real-time sign language detection with YOLOv8",
     summary:
-      "A deep learning model that forecasts hourly electricity demand from a year of historical building energy data, comparing recurrent and transformer-based approaches.",
-    tags: ["LSTM", "Transformer", "Time Series"],
+      "A webcam-based web app that recognizes English sign-language alphabet gestures live, using a custom-trained YOLOv8 model served through Flask.",
+    tags: ["YOLOv8", "Computer Vision", "Flask"],
     problem:
-      "Predicting near-term electricity demand from historical usage patterns supports smart energy management and load forecasting.",
+      "Recognizing sign language gestures in real time from a webcam feed, without any specialized hardware, in a form accessible through a normal web browser.",
     approach:
-      "Frame the problem as sequence prediction: use the last 24 hours of consumption to forecast the next hour, training on a year of hourly building energy data covering electricity, HVAC, lighting and equipment usage.",
+      "Capture live webcam frames and run them through a YOLOv8 object-detection model trained specifically on hand-gesture images for each letter of the alphabet, streaming the detection results back to the browser as they happen.",
     architecture:
-      "Raw timestamps are cleaned and sorted chronologically, then converted into overlapping 24-hour input sequences. A univariate LSTM (50 units, feeding a dense output layer) is trained with the Adam optimizer and MSE loss, using early stopping to prevent overfitting. A separate Transformer-based model is implemented alongside it for comparison.",
+      "A Flask app serves the interface: a live video feed is streamed through a /video_feed route, frames are run through the trained YOLOv8 model to detect the current hand sign, and the predicted letter is exposed to the frontend through a /get_letter AJAX endpoint that the page polls continuously. A separate /learn page displays reference images for every letter of the alphabet.",
     outcome:
-      "A trained forecasting model evaluated with RMSE and MAE, plus a full exploratory data analysis pass (yearly, weekly and hourly consumption patterns) informing the modeling choices.",
-    tech: ["Python", "TensorFlow/Keras", "Pandas", "NumPy", "Scikit-Learn"],
+      "A working real-time, browser-based sign-language-to-text interface, along with a documented pipeline for retraining the detection model on new gesture data using Roboflow or LabelImg for annotation and Ultralytics' YOLOv8 training tools.",
+    tech: ["Python", "YOLOv8", "Ultralytics", "Flask", "OpenCV"],
     githubUrl:
-      "https://github.com/SiddheshK1704/Energy_Prediction_LSTM_Minor_Project",
+      "https://github.com/SiddheshK1704/QuickSign-Sign_language_Interpreter",
   },
   {
     slug: "launch-control",
