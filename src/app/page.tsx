@@ -1,9 +1,10 @@
 import { Hero } from "@/components/hero/Hero";
 import { SelectedWork } from "@/components/projects/SelectedWork";
+import { ProjectDepthStack } from "@/components/projects/ProjectDepthStack";
 
-// v2 page skeleton — section order matches the new spec:
-//   Hero -> (cinematic transition, built into Hero in Phase C)
-//   -> Selected Work / Project Depth Stack (Phase D)
+// v2 page skeleton — section order matches the spec:
+//   Hero -> cinematic transition (built into Hero, Phase C)
+//   -> Selected Work heading -> Project Depth Stack (Phase D)
 //   -> About (Phase E)
 //   -> Contact (Phase F)
 //   -> Footer (Phase G)
@@ -15,9 +16,8 @@ export default function Home() {
   return (
     <main className="flex flex-col">
       <Hero />
-
-      {/* Phase D replaces this with <ProjectDepthStack /> */}
       <SelectedWork />
+      <ProjectDepthStack />
 
       <section id="about" className="min-h-screen flex items-center px-8">
         <h2 className="text-h1">ABOUT (placeholder — Phase E)</h2>
