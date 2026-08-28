@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 // takes over.
 export function SelectedWork() {
   return (
-    <section id="work" className="px-6 lg:px-16 py-24 flex flex-col gap-3">
+    <section id="work" className="px-6 lg:px-16 pt-24 pb-8 flex flex-col gap-3">
       <Reveal>
         <div className="flex flex-col gap-3">
           <p className="text-eyebrow">Work</p>

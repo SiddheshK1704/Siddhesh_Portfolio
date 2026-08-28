@@ -113,7 +113,7 @@ export function ProjectDepthStack() {
         if (i === segments) return; // the last panel has no "next" to hand off to
         tl.to(
           panel,
-          { opacity: 0.25, scale: 0.9, y: -50, filter: "blur(2px)", duration: 0.8 },
+          { opacity: 0, scale: 0.9, y: -50, filter: "blur(6px)", duration: 0.8 },
           i
         ).to(
           panels[i + 1],
