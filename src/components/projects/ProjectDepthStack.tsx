@@ -10,7 +10,7 @@ import { ProjectProgressIndicator } from "./ProjectProgressIndicator";
 
 // Scroll distance per transition between projects, in pixels.
 // Total virtual scroll for the section = SCROLL_PER_SEGMENT × (projects - 1).
-const SCROLL_PER_SEGMENT = 1200;
+const SCROLL_PER_SEGMENT = 350;
 
 export function ProjectDepthStack() {
   const wrapperRef = useRef<HTMLDivElement>(null);
