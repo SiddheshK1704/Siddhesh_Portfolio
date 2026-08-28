@@ -1,6 +1,7 @@
 import { Hero } from "@/components/hero/Hero";
 import { SelectedWork } from "@/components/projects/SelectedWork";
 import { ProjectDepthStack } from "@/components/projects/ProjectDepthStack";
+import { About } from "@/components/about/About";
 
 // v2 page skeleton — section order matches the spec:
 //   Hero -> cinematic transition (built into Hero, Phase C)
@@ -19,9 +20,7 @@ export default function Home() {
       <SelectedWork />
       <ProjectDepthStack />
 
-      <section id="about" className="min-h-screen flex items-center px-8">
-        <h2 className="text-h1">ABOUT (placeholder — Phase E)</h2>
-      </section>
+      <About />
 
       <section id="contact" className="min-h-screen flex items-center px-8">
         <h2 className="text-h1">CONTACT (placeholder — Phase F)</h2>
