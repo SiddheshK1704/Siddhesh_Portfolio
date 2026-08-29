@@ -117,20 +117,6 @@ body {
   }
 }
 
-/* Cursor-reactive glow (see components/ui/CursorGlow.tsx). The
-   actual x/y position comes from --spot-x/--spot-y, updated on every
-   mouse move; the gradient itself just reads those variables, so
-   CSS handles the visual repaint without any React re-render.
-   Falls back to a fixed, still-subtle position if JS hasn't set the
-   variables yet (e.g. before first mouse move, or on touch devices). */
-.cursor-glow {
-  background: radial-gradient(
-    250px circle at var(--spot-x, 50%) var(--spot-y, 30%),
-    rgba(var(--color-accent-rgb), 0.15),
-    transparent 70%
-  );
-  transition: background 0.2s ease-out;
-}
 
 /* Film grain: a barely-visible noise texture over the whole site.
    Generated with an inline SVG feTurbulence filter (no image file,

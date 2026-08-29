@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Reveal } from "@/components/ui/Reveal";
-import { CursorGlow } from "@/components/ui/CursorGlow";
 import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/Icons";
 import { CONTACT_DATA } from "@/data/contact";
 
@@ -50,8 +49,6 @@ export function Hero() {
       id="top"
       className="relative overflow-hidden min-h-screen flex flex-col lg:flex-row items-center gap-12 lg:gap-8 px-6 lg:px-16 pt-32 pb-16"
     >
-      <CursorGlow />
-
       <motion.div
         style={{ opacity: heroOpacity }}
         className="relative flex flex-col lg:flex-row items-center gap-12 lg:gap-8 w-full"
@@ -111,17 +108,26 @@ export function Hero() {
         {/* Photo column */}
         <motion.div style={{ y: photoY }} className="relative lg:w-2/5 w-full flex justify-center lg:justify-end">
           <Reveal delay={0.15} className="w-full max-w-sm flex flex-col items-center gap-3">
-            <div className="relative w-full max-w-sm aspect-[3/4] border border-border rounded-[var(--radius-md)] overflow-hidden">
-              <Image
-                src="/images/sid.jpg"
-                alt="Sid Khankhoje standing on a beach at sunset, looking toward the horizon"
-                fill
-                priority
-                sizes="(min-width: 1024px) 384px, 90vw"
-                className="object-cover object-[50%_30%]"
+            <div className="group/photo relative w-full max-w-sm cursor-pointer">
+              {/* Backing geometric accent frame — offsets down-right with vibrant accent border & subtle glow on hover */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 z-0 border border-accent/20 rounded-[var(--radius-md)] bg-accent/5 transition-all duration-300 ease-out pointer-events-none group-hover/photo:border-accent group-hover/photo:translate-x-3 group-hover/photo:translate-y-3 group-hover/photo:bg-accent/10"
               />
-              <div className="absolute inset-0 bg-accent/10 mix-blend-multiply pointer-events-none" />
-              <div className="absolute inset-0 ring-1 ring-inset ring-border pointer-events-none" />
+
+              {/* Foreground Photo Frame — shifts up-left with border accent illumination */}
+              <div className="relative z-10 w-full aspect-[3/4] border border-border rounded-[var(--radius-md)] overflow-hidden bg-background transition-all duration-300 ease-out group-hover/photo:-translate-x-1 group-hover/photo:-translate-y-1 group-hover/photo:border-accent/70 group-hover/photo:shadow-[0_0_24px_rgba(51,85,255,0.18)]">
+                <Image
+                  src="/images/sid.jpg"
+                  alt="Sid Khankhoje standing on a beach at sunset, looking toward the horizon"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 384px, 90vw"
+                  className="object-cover object-[50%_30%] transition-transform duration-500 ease-out group-hover/photo:scale-[1.02]"
+                />
+                <div className="absolute inset-0 bg-accent/10 mix-blend-multiply pointer-events-none" />
+                <div className="absolute inset-0 ring-1 ring-inset ring-border pointer-events-none" />
+              </div>
             </div>
 
             {/* Social icons under photo */}
