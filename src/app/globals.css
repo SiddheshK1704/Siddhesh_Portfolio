@@ -102,6 +102,20 @@ body {
   text-transform: uppercase;
   color: var(--color-muted);
 }
+/* Immediate hardware-accelerated text mask reveal for the intro sequence.
+   Runs instantly on HTML first paint without waiting for React hydration. */
+@keyframes intro-mask-reveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+.intro-reveal-text {
+  animation: intro-mask-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
 /* Respect users who've asked their OS to reduce motion.
    This is an accessibility requirement, not optional —

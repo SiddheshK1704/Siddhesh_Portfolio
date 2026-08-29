@@ -88,9 +88,11 @@ export function IntroSequence() {
 
   return (
     <div className="fixed inset-0 z-[100] bg-background flex items-center justify-center overflow-hidden">
-      {stage === "hello" && <IntroLine text="Hello," isReceding={isReceding} />}
+      {stage === "hello" && (
+        <IntroLine key="hello" text="Hello," isReceding={isReceding} />
+      )}
       {stage === "thisIsMe" && (
-        <IntroLine text="This is me." isReceding={isReceding} />
+        <IntroLine key="thisIsMe" text="This is me." isReceding={isReceding} />
       )}
     </div>
   );
