@@ -3,6 +3,7 @@ export interface ContactLink {
   href: string;
   type: "email" | "external";
   ariaLabel: string;
+  address?: string;
 }
 
 export const CONTACT_DATA = {
@@ -27,12 +28,13 @@ export const CONTACT_DATA = {
     type: "external" as const,
     ariaLabel: "LinkedIn profile (opens in a new tab)",
   },
-  // Real Email
+  // Email — opens Gmail Web Compose directly with recipient and subject pre-filled
   email: {
     label: "EMAIL",
-    href: "mailto:siddheshkhankhoje@gmail.com",
-    type: "email" as const,
-    ariaLabel: "Send an email to siddheshkhankhoje@gmail.com",
+    address: "siddheshkhankhoje@gmail.com",
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=siddheshkhankhoje@gmail.com&su=Hello%20Siddhesh",
+    type: "external" as const,
+    ariaLabel: "Compose email to siddheshkhankhoje@gmail.com in Gmail (opens in a new tab)",
   },
   // Resume link preserved exactly
   resume: {
