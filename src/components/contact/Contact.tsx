@@ -26,7 +26,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative flex flex-col justify-between px-6 lg:px-16 pt-28 pb-24 border-t border-border"
+      className="relative flex flex-col justify-between px-6 lg:px-16 pt-28 pb-28 border-t border-border"
       aria-labelledby="contact-heading"
     >
       <div className="max-w-6xl mx-auto w-full flex flex-col gap-16 md:gap-20">
