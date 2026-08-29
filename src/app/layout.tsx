@@ -22,7 +22,7 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
-  title: "Sid Khankhoje — AI/ML & Software Engineering",
+  title: "SID. | Portfolio",
   description:
     "Portfolio of Siddhesh Khankhoje — building intelligent systems and software experiences.",
 };
