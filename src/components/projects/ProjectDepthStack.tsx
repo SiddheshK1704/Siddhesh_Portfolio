@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useReducedMotion } from "motion/react";
 import { projects } from "@/data/projects";
 import { ProjectPanel } from "./ProjectPanel";
 import { ProjectProgressIndicator } from "./ProjectProgressIndicator";
@@ -22,29 +23,10 @@ export function ProjectDepthStack() {
   // progress indicator: this fires on every scroll tick.
   const lastActiveRef = useRef(0);
 
-  // Always false on both server and first client render — the
-  // pinned/stacked layout is the default markup. The real
-  // reduced-motion check only runs after mount, in the effect
-  // below, so the very first render is always identical regardless
-  // of environment (the lesson from the intro sequence's hydration
-  // fix, applied here proactively).
-  //
-  // This ISN'T just cosmetic for this component the way it was for
-  // the car: the animated layout stacks all 4 projects exactly on
-  // top of each other and reveals them via scroll-linked animation.
-  // Simply "turning off the animation" for reduced-motion users
-  // would leave 3 of the 4 projects permanently invisible — that's
-  // broken content, not an accessible fallback. So reduced-motion
-  // users get a genuinely different layout: a plain vertical stack,
-  // everything visible, normal scrolling, no pin.
-  const [useSimpleLayout, setUseSimpleLayout] = useState(false);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) setUseSimpleLayout(true);
-  }, []);
+  // Use Motion's useReducedMotion hook to safely detect OS reduced motion
+  // without manual effect-based state mutations.
+  const shouldReduceMotion = useReducedMotion();
+  const useSimpleLayout = !!shouldReduceMotion;
 
   useGSAP(
     () => {

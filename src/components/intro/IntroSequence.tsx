@@ -44,14 +44,16 @@ export function IntroSequence() {
     ).matches;
 
     if (alreadySeen || prefersReducedMotion) {
-      setStage("done");
-      try {
-        sessionStorage.setItem(SESSION_KEY, "1");
-      } catch {
-        // Non-critical if this fails — worst case, the intro plays
-        // again next visit, which is a minor inconvenience, not a bug.
-      }
-      return;
+      const skipTimer = setTimeout(() => {
+        setStage("done");
+        try {
+          sessionStorage.setItem(SESSION_KEY, "1");
+        } catch {
+          // Non-critical if this fails — worst case, the intro plays
+          // again next visit, which is a minor inconvenience, not a bug.
+        }
+      }, 0);
+      return () => clearTimeout(skipTimer);
     }
 
     const timers = [

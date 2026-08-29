@@ -130,12 +130,12 @@ export function AboutMotorsports() {
 
           {/* ── Section eyebrow ──────────────────────────────── */}
           <Reveal>
-            <p className="text-eyebrow">Motorsports</p>
+            <p className="text-eyebrow">My Idol?</p>
           </Reveal>
 
           {/* ── Name ─────────────────────────────────────────── */}
           <Reveal delay={0.1}>
-            <h3 className="text-h1">Max Verstappen</h3>
+            <h3 className="text-h1">Max Verstappen.</h3>
           </Reveal>
 
           {/* ── Accent separator ─────────────────────────────── */}
