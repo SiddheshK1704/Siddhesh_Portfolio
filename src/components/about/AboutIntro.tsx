@@ -53,7 +53,7 @@ export function AboutIntro() {
 
           {/* Photo column (LEFT on desktop) */}
           <Reveal delay={0.15}>
-            <div className="relative">
+            <div className="relative max-w-md">
               {/* Vertical accent line — a thin blue stroke to the
                   left of the photo, visible on desktop only. This
                   detail doesn't exist anywhere else in the site;

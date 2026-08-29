@@ -26,8 +26,8 @@ export function ProjectPanel({ project, index }: ProjectPanelProps) {
       <div className="flex flex-col gap-5 order-2 lg:order-1">
         {/* Project number */}
         <p
-          className="font-mono text-eyebrow font-semibold tracking-widest"
-          style={{ color: accent.from }}
+          className="text-eyebrow font-semibold tracking-widest"
+          style={{ color: accent.from, fontFamily: 'var(--font-oswald), sans-serif' }}
         >
           {number}
         </p>
@@ -145,8 +145,8 @@ export function ProjectPanel({ project, index }: ProjectPanelProps) {
         {/* Project tagline floating inside the visual */}
         <div className="absolute bottom-6 left-6 right-6">
           <p
-            className="font-mono text-small tracking-wide"
-            style={{ color: `${accent.from}80` }}
+            className="text-small tracking-wide"
+            style={{ color: `${accent.from}80`, fontFamily: 'var(--font-oswald), sans-serif' }}
           >
             {project.tagline}
           </p>
