@@ -32,7 +32,7 @@ export function AboutPeople() {
         <Reveal>
           <h3 className="text-h1 max-w-3xl">
             I like{" "}
-            <span className="text-accent">people.</span>
+            <span className="text-accent">good conversations.</span>
           </h3>
         </Reveal>
 

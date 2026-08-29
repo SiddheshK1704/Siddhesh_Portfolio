@@ -5,6 +5,8 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Reveal } from "@/components/ui/Reveal";
 import { CursorGlow } from "@/components/ui/CursorGlow";
+import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/Icons";
+import { CONTACT_DATA } from "@/data/contact";
 
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -108,7 +110,7 @@ export function Hero() {
 
         {/* Photo column */}
         <motion.div style={{ y: photoY }} className="relative lg:w-2/5 w-full flex justify-center lg:justify-end">
-          <Reveal delay={0.15} className="w-full max-w-sm">
+          <Reveal delay={0.15} className="w-full max-w-sm flex flex-col items-center gap-3">
             <div className="relative w-full max-w-sm aspect-[3/4] border border-border rounded-[var(--radius-md)] overflow-hidden">
               <Image
                 src="/images/sid.jpg"
@@ -120,6 +122,37 @@ export function Hero() {
               />
               <div className="absolute inset-0 bg-accent/10 mix-blend-multiply pointer-events-none" />
               <div className="absolute inset-0 ring-1 ring-inset ring-border pointer-events-none" />
+            </div>
+
+            {/* Social icons under photo */}
+            <div className="flex items-center justify-center gap-2 pt-1">
+              <a
+                href={CONTACT_DATA.github.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={CONTACT_DATA.github.ariaLabel}
+                className="p-2.5 text-muted hover:text-accent transition-all duration-200 hover:-translate-y-0.5 rounded-[var(--radius-sm)] focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                <GithubIcon size={22} />
+              </a>
+              <a
+                href={CONTACT_DATA.instagram.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={CONTACT_DATA.instagram.ariaLabel}
+                className="p-2.5 text-muted hover:text-accent transition-all duration-200 hover:-translate-y-0.5 rounded-[var(--radius-sm)] focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                <InstagramIcon size={22} />
+              </a>
+              <a
+                href={CONTACT_DATA.linkedin.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={CONTACT_DATA.linkedin.ariaLabel}
+                className="p-2.5 text-muted hover:text-accent transition-all duration-200 hover:-translate-y-0.5 rounded-[var(--radius-sm)] focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                <LinkedinIcon size={22} />
+              </a>
             </div>
           </Reveal>
         </motion.div>
