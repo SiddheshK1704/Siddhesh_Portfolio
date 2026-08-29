@@ -9,9 +9,9 @@ import { projects } from "@/data/projects";
 import { ProjectPanel } from "./ProjectPanel";
 import { ProjectProgressIndicator } from "./ProjectProgressIndicator";
 
-// Scroll distance per transition between projects, in pixels.
-// Total virtual scroll for the section = SCROLL_PER_SEGMENT × (projects - 1).
-const SCROLL_PER_SEGMENT = 350;
+// Scroll distance per transition between projects (in vh units).
+// 100vh per segment allows snappy, responsive transitions without excessive scrolling.
+const SCROLL_PER_SEGMENT = 100;
 
 export function ProjectDepthStack() {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -61,7 +61,7 @@ export function ProjectDepthStack() {
           trigger: wrapperRef.current,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.8,
+          scrub: 0.5,
           // No `pin: true` — CSS sticky handles the pinning.
           onUpdate: (self) => {
             // Which project should the indicator show right now?
