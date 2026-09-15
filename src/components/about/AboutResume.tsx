@@ -50,7 +50,7 @@ export function AboutResume() {
             Place the file at: public/resume.pdf */}
         <Reveal delay={0.2}>
           <a
-            href="https://drive.google.com/file/d/1C_LeCdoFlPa0siNCvWCRsmrtxFJ-Yn2O/view?usp=sharing"
+            href="https://drive.google.com/file/d/1QOu_3E4_tSsP1opXzV9gNIrQEg2ug4Dk/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 border border-border px-6 py-3 text-small font-medium rounded-[var(--radius-sm)] transition-all hover:border-accent hover:text-accent w-fit"
