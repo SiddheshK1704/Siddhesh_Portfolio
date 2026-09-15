@@ -39,7 +39,7 @@ export const CONTACT_DATA = {
   // Resume link preserved exactly
   resume: {
     label: "VIEW RESUME",
-    href: "https://drive.google.com/file/d/1C_LeCdoFlPa0siNCvWCRsmrtxFJ-Yn2O/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1QOu_3E4_tSsP1opXzV9gNIrQEg2ug4Dk/view?usp=drive_link",
     type: "external" as const,
     ariaLabel: "View Resume PDF on Google Drive (opens in a new tab)",
   },
