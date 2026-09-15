@@ -18,12 +18,10 @@ export type Project = {
 // nothing invented. Update this file, not the components, when
 // project details change.
 //
-// Order matters here: the Project Depth Stack (Phase D) presents
+// Order matters here: the Project Depth Stack presents
 // projects in exactly this array order — LawTalk, QuickSign,
-// Launch Control, Slipstream. The old `featured` flag from the v1
-// card-grid design is gone; the depth-shift presentation gives
-// every project equal full-screen treatment, so there's no longer
-// a "large vs compact" distinction to encode.
+// Xplainify, Slipstream. The depth-shift presentation gives
+// every project equal full-screen treatment.
 export const projects: Project[] = [
   {
     slug: "lawtalk",
@@ -71,6 +69,31 @@ export const projects: Project[] = [
       "https://github.com/SiddheshK1704/QuickSign-Sign_language_Interpreter",
   },
   {
+    slug: "xplainify",
+    title: "Xplainify",
+    tagline: "AI-powered webpage and code understanding",
+    summary:
+      "An AI-powered Chrome extension that helps students and developers understand technical webpages and code faster, with AI-generated summaries and beginner-friendly explanations.",
+    tags: ["Chrome MV3", "Vanilla JavaScript", "Gemini API", "Chrome APIs"],
+    problem:
+      "Technical documentation, research papers, and complex codebases often contain dense jargon and unannotated snippets that slow down learning and comprehension for students and developers.",
+    approach:
+      "Summarize active web pages into structured TL;DRs and key takeaways, detect code blocks automatically for plain-English explanations, and provide on-demand 'Explain Selected Code' via the Chrome context menu—making direct browser-to-Gemini REST API calls using the user's own locally stored API key with zero intermediary backend.",
+    architecture:
+      "Built on Chrome Extension Manifest V3 using vanilla HTML, CSS, and JavaScript. Content scripts extract and sanitize article content and code blocks with prompt-injection-aware handling; the background service worker handles context menu events and orchestrates dynamic Gemini model discovery; and chrome.storage.local securely stores user API keys and preferences without external servers or user accounts.",
+    outcome:
+      "A lightweight, privacy-first developer tool that accelerates technical reading and code comprehension directly in the browser with no subscription fees, third-party backend, or data tracking.",
+    tech: [
+      "Chrome Extension MV3",
+      "Vanilla JavaScript",
+      "Google Gemini REST API",
+      "Chrome Storage API",
+      "Chrome Scripting API",
+    ],
+    githubUrl: "https://github.com/SiddheshK1704/Xplainify",
+  },
+  /*
+  {
     slug: "launch-control",
     title: "Launch Control",
     tagline: "Physics-based launch control simulator",
@@ -88,6 +111,7 @@ export const projects: Project[] = [
     tech: ["Python", "NumPy", "Matplotlib", "PID Control", "pytest"],
     githubUrl: "https://github.com/SiddheshK1704/Launch-Control-Project",
   },
+  */
   {
     slug: "slipstream",
     title: "Slipstream",

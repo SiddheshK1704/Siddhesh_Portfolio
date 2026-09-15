@@ -32,11 +32,11 @@ Outside of engineering, my interests include motorsports (Formula 1 & Max Versta
 - **Architecture**: Custom-trained YOLOv8 object detection model served via Flask, streaming video and predictions asynchronously to the browser.
 - **Stack**: Python, YOLOv8, Ultralytics, Flask, OpenCV.
 
-### 03 / Launch Control
-*Physics-Based Launch Dynamics & PID Controller*
-- A pure-software physics simulation comparing an open-loop F1-style clutch launch against a closed-loop PID wheel-slip regulator.
-- **Architecture**: Implements Pacejka "magic formula" tire dynamics, coupled rotating/translating vehicle mass models, and a PID controller with anti-windup (leaky integrator) and actuator rate-limiting.
-- **Stack**: Python, NumPy, Matplotlib, PID Control, pytest.
+### 03 / Xplainify
+*AI-Powered Webpage and Code Understanding*
+- An AI-powered Chrome extension that helps students and developers understand technical webpages and code faster with AI-generated summaries and beginner-friendly explanations.
+- **Architecture**: Chrome Extension Manifest V3 with direct browser-to-Gemini REST API calls using the user's locally stored API key. Features dynamic Gemini model discovery, prompt-injection-aware content sanitization, and context-menu code explanations with zero intermediary backend.
+- **Stack**: Chrome MV3, Vanilla JavaScript, Google Gemini REST API, Chrome Storage API, Chrome Scripting API.
 
 ### 04 / Slipstream
 *Motorsport-Themed Automotive Showcase*
