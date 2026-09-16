@@ -86,18 +86,22 @@ export function AboutMotorsports() {
     shouldReduceMotion ? [0, 0] : [30, -30]
   );
 
-  return (
-    <div ref={sectionRef} className="relative overflow-hidden min-h-[80vh] flex items-center">
+  // Scroll expansion: "MY IDOL?" text expands and cross-fades into the Max Verstappen portrait
+  const idolScale = useTransform(scrollYProgress, [0.05, 0.45], [0.95, 2.2]);
+  const idolOpacity = useTransform(scrollYProgress, [0.05, 0.25, 0.45], [0.3, 0.25, 0]);
+  const bgPhotoOpacity = useTransform(scrollYProgress, [0.05, 0.4], [0.3, 0.85]);
+  const bgPhotoScale = useTransform(scrollYProgress, [0.05, 0.5], [1.15, 1]);
 
-      {/* ── Background image with parallax ────────────────── 
-          motion.div applies the parallax y-offset. The div extends
-          80px beyond the section edges in both directions so the
-          movement never reveals the section background behind it.
-          
-          overflow-hidden on the parent clips the extra height,
-          so visually the image appears contained within the section. */}
+  return (
+    <div ref={sectionRef} className="relative overflow-hidden min-h-[85vh] flex items-center">
+
+      {/* Background image with scroll-expansion cross-fade and parallax */}
       <motion.div
-        style={{ y: imageY }}
+        style={{
+          y: imageY,
+          opacity: shouldReduceMotion ? 0.75 : bgPhotoOpacity,
+          scale: shouldReduceMotion ? 1 : bgPhotoScale,
+        }}
         className="absolute inset-x-0 -top-20 -bottom-20"
       >
         <Image
@@ -108,18 +112,25 @@ export function AboutMotorsports() {
           className="object-cover object-top"
         />
 
-        {/* Dark overlay — 75% of the background color layered over
-            the image. This keeps the white text readable while still
-            letting the photo atmosphere show through. Adjust the
-            opacity fraction (75) to taste: lower = more image visible,
-            higher = more readable text. */}
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-background/75" />
 
-        {/* Subtle blue tint — same technique as Hero and AboutIntro
-            photos. Gives the image cool-tone cohesion with the
-            site's accent color. */}
+        {/* Subtle blue tint */}
         <div className="absolute inset-0 bg-accent/5 mix-blend-multiply" />
       </motion.div>
+
+      {/* Expanding "MY IDOL?" display watermark that grows and dissolves into the portrait */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-10">
+        <motion.h2
+          style={{
+            scale: shouldReduceMotion ? 1 : idolScale,
+            opacity: shouldReduceMotion ? 0.08 : idolOpacity,
+          }}
+          className="text-[13vw] font-black tracking-widest text-accent uppercase select-none whitespace-nowrap"
+        >
+          MY IDOL?
+        </motion.h2>
+      </div>
 
       {/* ── Content ───────────────────────────────────────── 
           z-10 ensures the text renders ABOVE the background image

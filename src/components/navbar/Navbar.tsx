@@ -4,10 +4,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Section anchors on the homepage. Each link scrolls to an
-// id="..." element we'll add as we build Hero, Projects, About,
-// Lab and Contact in later phases. Kept here (not in data/)
-// because this is structural navigation, not content data.
+// Section anchors on the homepage.
 const NAV_LINKS = [
   { href: "#work", label: "WORK" },
   { href: "#about", label: "ABOUT" },
@@ -15,39 +12,38 @@ const NAV_LINKS = [
 ];
 
 export function Navbar() {
-  // State that lives only in the browser: is the mobile menu open?
-  // useState returns [currentValue, functionToUpdateIt].
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header
       data-lenis-prevent
-      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-4 px-4"
+      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-4 px-4 pointer-events-auto"
     >
       <nav
         className={cn(
           "w-full max-w-5xl flex items-center justify-between",
-          "px-5 py-3 rounded-[var(--radius-md)]",
-          // Glassmorphism: semi-transparent background + blur.
-          // Used ONLY here, per the design brief — not site-wide.
-          "bg-background/60 backdrop-blur-md border border-border"
+          "px-6 py-3.5 rounded-[var(--radius-md)] relative overflow-hidden",
+          // React Bits Glass Surface: multi-layered refraction, blur, and border shine
+          "bg-background/45 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]",
+          "after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-accent/40 after:to-transparent"
         )}
         aria-label="Primary"
       >
         <a
           href="#top"
-          className="text-small font-semibold tracking-tight hover:text-accent transition-colors"
+          className="group relative flex items-center gap-1.5 text-small font-bold tracking-tight hover:text-accent transition-colors"
         >
-          SID.
+          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+          <span className="font-mono">SID.</span>
         </a>
 
-        {/* Desktop links: hidden below the md breakpoint, shown above it */}
+        {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-eyebrow hover:text-foreground transition-colors"
+                className="relative py-1 text-eyebrow tracking-widest text-muted hover:text-foreground transition-colors after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-accent hover:after:w-full after:transition-all after:duration-300"
               >
                 {link.label}
               </a>
@@ -55,10 +51,10 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Mobile menu trigger: only visible below md breakpoint */}
+        {/* Mobile menu trigger */}
         <button
           type="button"
-          className="md:hidden text-foreground"
+          className="md:hidden text-foreground p-1 hover:text-accent transition-colors"
           onClick={() => setIsOpen((prev) => !prev)}
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
@@ -68,23 +64,21 @@ export function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu panel: only rendered in the DOM when open.
-          Conditional rendering with && — if isOpen is false, the
-          expression short-circuits and nothing renders. */}
+      {/* Mobile menu panel with Glass Surface */}
       {isOpen && (
         <div
           id="mobile-menu"
           className={cn(
             "md:hidden absolute top-20 w-[calc(100%-2rem)] max-w-5xl",
-            "bg-background/90 backdrop-blur-md border border-border rounded-[var(--radius-md)]",
-            "flex flex-col p-5 gap-4"
+            "bg-background/85 backdrop-blur-2xl border border-white/10 rounded-[var(--radius-md)] shadow-2xl",
+            "flex flex-col p-6 gap-5 animate-in fade-in slide-in-from-top-2 duration-200"
           )}
         >
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-h2 hover:text-accent transition-colors"
+              className="text-h2 font-medium hover:text-accent transition-colors"
               onClick={() => setIsOpen(false)}
             >
               {link.label}

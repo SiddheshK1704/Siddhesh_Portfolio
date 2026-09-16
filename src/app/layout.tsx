@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Oswald } from "next/font/google";
 import { Navbar } from "@/components/navbar/Navbar";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { IntroSequence } from "@/components/intro/IntroSequence";
+import { GlobalBackground } from "@/components/reactbits/GlobalBackground";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -34,6 +35,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${oswald.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Global interactive Ferrofluid background */}
+        <GlobalBackground />
+
         {/* Decorative noise texture over the entire site. z-40 keeps
             it above page content but below the navbar (z-50).
             pointer-events-none + aria-hidden: purely visual, never

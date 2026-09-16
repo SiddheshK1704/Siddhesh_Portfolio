@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
+import { CurrentlyBuilding } from "./CurrentlyBuilding";
 
 // AboutIntro — the editorial introduction to the About section.
 //
@@ -126,6 +127,11 @@ export function AboutIntro() {
                 <span className="text-eyebrow">Currently</span>
                 <span className="text-foreground">CS @ SRM University</span>
               </div>
+            </Reveal>
+
+            {/* Interactive Currently Building status */}
+            <Reveal delay={0.35}>
+              <CurrentlyBuilding />
             </Reveal>
           </div>
         </div>

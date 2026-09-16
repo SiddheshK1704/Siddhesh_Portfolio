@@ -1,46 +1,31 @@
-import { Reveal } from "@/components/ui/Reveal";
+"use client";
 
-// AboutPeople — the People / Conversations section.
-//
-// SERVER COMPONENT — purely static content with <Reveal> animation.
-//
-// DESIGN APPROACH:
-//   Simple, editorial. A large heading followed by two paragraphs
-//   of conversational copy. No complex layout, no cards, no grid.
-//   The simplicity IS the design — after the visual complexity of
-//   the Interests and Motorsports sections, a quieter moment with
-//   just text and space lets the words land.
-//
-//   max-w-xl on the copy container prevents lines from stretching
-//   too wide on large screens, maintaining comfortable reading width.
-//
-// PERSONALITY NOTE (from spec):
-//   "Being a listener" is part of the personality but NOT the
-//   defining characteristic. The copy leads with enjoying people
-//   and conversations broadly, and the listener aspect appears
-//   naturally in the second paragraph without being labelled.
+import { Reveal } from "@/components/ui/Reveal";
+import TextPressure from "@/components/reactbits/TextPressure";
 
 export function AboutPeople() {
   return (
     <div className="px-6 lg:px-16 py-24">
       <div className="max-w-6xl mx-auto flex flex-col gap-12">
-
-        {/* ── Heading ──────────────────────────────────────── 
-            "people" in accent blue — it's the key word of this
-            section, and the selective color treatment matches the
-            pattern from AboutIntro ("ask a lot of questions"). */}
+        {/* Heading with React Bits TextPressure variable font interaction */}
         <Reveal>
-          <h3 className="text-h1 max-w-3xl">
-            I like{" "}
-            <span className="text-accent">good conversations.</span>
-          </h3>
+          <h3 className="sr-only">I like good conversations.</h3>
+          <div className="relative h-[90px] sm:h-[120px] md:h-[140px] w-full max-w-3xl overflow-hidden select-none">
+            <TextPressure
+              text="I like good conversations."
+              flex={true}
+              alpha={false}
+              stroke={false}
+              width={true}
+              weight={true}
+              italic={false}
+              textColor="#f5f5f5"
+              minFontSize={28}
+            />
+          </div>
         </Reveal>
 
-        {/* ── Copy ─────────────────────────────────────────── 
-            Two paragraphs, separate Reveal wrappers so they
-            stagger in. First paragraph: what I enjoy. Second
-            paragraph: how I show up — the listener aspect
-            emerges naturally here without being the headline. */}
+        {/* Copy */}
         <div className="max-w-xl flex flex-col gap-8">
           <Reveal delay={0.1}>
             <p className="text-body text-muted leading-relaxed">

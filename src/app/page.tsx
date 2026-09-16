@@ -4,6 +4,7 @@ import { ProjectDepthStack } from "@/components/projects/ProjectDepthStack";
 import { About } from "@/components/about/About";
 import { Contact } from "@/components/contact/Contact";
 import { Footer } from "@/components/footer/Footer";
+import { BottomBlur } from "@/components/ui/BottomBlur";
 
 // v2 page skeleton — section order matches the spec:
 //   Hero -> cinematic transition (built into Hero, Phase C)
@@ -27,6 +28,7 @@ export default function Home() {
       <Contact />
 
       <Footer />
+      <BottomBlur />
     </main>
   );
 }
