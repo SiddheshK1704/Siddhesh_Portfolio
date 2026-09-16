@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { CONTACT_DATA } from "@/data/contact";
-import WarpText from "@/components/reactbits/WarpText";
 import MagnetLines from "@/components/reactbits/MagnetLines";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
  * Contact — the final typographic CTA of the portfolio.
- * Enhanced with hover-only WarpText interaction and an open decorative MagnetLines field.
+ * Features clean normal typography and an open decorative MagnetLines field.
  */
 export function Contact() {
-  const [isWarpHovered, setIsWarpHovered] = useState(false);
 
   const directChannels = [
     {
@@ -45,48 +42,21 @@ export function Contact() {
           </div>
         </Reveal>
 
-        {/* ── Main Typography CTA (Hover-only WarpText) + Open MagnetLines ── */}
+        {/* ── Main Typography CTA + Open MagnetLines ── */}
         <Reveal delay={0.1}>
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-12">
             
-            {/* Typography CTA: Default clean readable text, WarpText on hover only */}
-            <div
-              className="relative w-full lg:w-3/5 min-h-[220px] sm:min-h-[260px] flex items-center cursor-pointer select-none"
-              onMouseEnter={() => setIsWarpHovered(true)}
-              onMouseLeave={() => setIsWarpHovered(false)}
-            >
-              {/* Clean readable default typography */}
+            {/* Typography CTA: Clean normal text */}
+            <div className="relative w-full lg:w-3/5 flex items-center select-none">
               <h2
                 id="contact-heading"
-                className={`text-display max-w-3xl leading-[0.95] tracking-tight uppercase transition-opacity duration-300 ${
-                  isWarpHovered ? "opacity-0 pointer-events-none" : "opacity-100"
-                }`}
+                className="text-display max-w-3xl leading-[0.95] tracking-tight uppercase"
               >
                 IF YOU MADE IT <br />
                 THIS FAR, <br />
                 <span className="text-muted">WE SHOULD </span>
                 <span className="text-accent">PROBABLY TALK.</span>
               </h2>
-
-              {/* WarpText active on hover only */}
-              {isWarpHovered && (
-                <div className="absolute inset-0 w-full h-full pointer-events-none flex items-center">
-                  <WarpText
-                    text={"IF YOU MADE IT\nTHIS FAR,\nWE SHOULD\nPROBABLY TALK."}
-                    color="#f5f5f5"
-                    warpStrength={1.1}
-                    warpScale={1.0}
-                    speed={0.65}
-                    pointerInfluence={1.2}
-                    pointerStrength={1.3}
-                    refraction={0.06}
-                    ripple={true}
-                    fontSize={44}
-                    fontWeight={800}
-                    className="w-full h-full"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Open, unboxed MagnetLines decorative interaction */}
