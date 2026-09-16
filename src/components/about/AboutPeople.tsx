@@ -1,16 +1,25 @@
 "use client";
 
 import { Reveal } from "@/components/ui/Reveal";
+import TextPressure from "@/components/reactbits/TextPressure";
 
 export function AboutPeople() {
   return (
     <div className="px-6 lg:px-16 py-24">
       <div className="max-w-6xl mx-auto flex flex-col gap-12">
-        {/* Heading with clean static Geist typography */}
+        {/* Heading with robust Text Pressure variable font interaction */}
         <Reveal>
-          <h3 className="text-h1 max-w-3xl font-sans tracking-tight">
-            I like <span className="text-accent">good conversations.</span>
-          </h3>
+          <div className="max-w-3xl">
+            <TextPressure
+              text="I like good conversations."
+              accentText="good conversations."
+              className="text-h1 font-sans tracking-tight"
+              weight={true}
+              width={false}
+              italic={false}
+              alpha={false}
+            />
+          </div>
         </Reveal>
 
         {/* Copy */}

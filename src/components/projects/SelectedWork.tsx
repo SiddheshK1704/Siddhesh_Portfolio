@@ -5,46 +5,69 @@ import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { LogoLoop } from "@/components/reactbits/LogoLoop";
 import Folder from "@/components/reactbits/Folder";
-import { TechIcon } from "@/components/ui/TechIcons";
 import { projects } from "@/data/projects";
 
-// Required tech stack for LogoLoop — strictly NO Stripe.
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiJavascript,
+  SiTailwindcss,
+  SiPython,
+  SiFastapi,
+  SiPytorch,
+  SiTensorflow,
+  SiGit,
+  SiGithub,
+  SiDocker,
+  SiPostgresql,
+  SiMysql,
+  SiSupabase,
+  SiCplusplus,
+  SiC,
+  SiVercel,
+  SiFlask,
+  SiOpencv,
+} from "react-icons/si";
+import { FaJava } from "react-icons/fa6";
+import { VscVscode } from "react-icons/vsc";
+
+// Authentic developer tech stack — strictly NO Stripe, NO company marketing logos.
 const TECH_STACK = [
-  { id: "react", name: "React" },
-  { id: "next.js", name: "Next.js" },
-  { id: "typescript", name: "TypeScript" },
-  { id: "javascript", name: "JavaScript" },
-  { id: "python", name: "Python" },
-  { id: "pytorch", name: "PyTorch" },
-  { id: "tensorflow", name: "TensorFlow" },
-  { id: "fastapi", name: "FastAPI" },
-  { id: "flask", name: "Flask" },
-  { id: "tailwind css", name: "Tailwind CSS" },
-  { id: "docker", name: "Docker" },
-  { id: "git", name: "Git" },
-  { id: "github", name: "GitHub" },
-  { id: "opencv", name: "OpenCV" },
-  { id: "mysql", name: "MySQL" },
-  { id: "supabase", name: "Supabase" },
-  { id: "c++", name: "C++" },
-  { id: "c", name: "C" },
-  { id: "java", name: "Java" },
-  { id: "html5", name: "HTML5" },
-  { id: "css3", name: "CSS3" },
-  { id: "vercel", name: "Vercel" },
-  { id: "vs code", name: "VS Code" },
+  { name: "React", Icon: SiReact, color: "#61DAFB" },
+  { name: "Next.js", Icon: SiNextdotjs, color: "#ffffff" },
+  { name: "TypeScript", Icon: SiTypescript, color: "#3178C6" },
+  { name: "JavaScript", Icon: SiJavascript, color: "#F7DF1E" },
+  { name: "Python", Icon: SiPython, color: "#3776AB" },
+  { name: "PyTorch", Icon: SiPytorch, color: "#EE4C2C" },
+  { name: "TensorFlow", Icon: SiTensorflow, color: "#FF6F00" },
+  { name: "FastAPI", Icon: SiFastapi, color: "#009688" },
+  { name: "Flask", Icon: SiFlask, color: "#ffffff" },
+  { name: "Tailwind CSS", Icon: SiTailwindcss, color: "#06B6D4" },
+  { name: "Docker", Icon: SiDocker, color: "#2496ED" },
+  { name: "Git", Icon: SiGit, color: "#F05032" },
+  { name: "GitHub", Icon: SiGithub, color: "#ffffff" },
+  { name: "PostgreSQL", Icon: SiPostgresql, color: "#4169E1" },
+  { name: "MySQL", Icon: SiMysql, color: "#4479A1" },
+  { name: "Supabase", Icon: SiSupabase, color: "#3ECF8E" },
+  { name: "OpenCV", Icon: SiOpencv, color: "#5C3EE8" },
+  { name: "C++", Icon: SiCplusplus, color: "#00599C" },
+  { name: "C", Icon: SiC, color: "#A8B9CC" },
+  { name: "Java", Icon: FaJava, color: "#ED8B00" },
+  { name: "Vercel", Icon: SiVercel, color: "#ffffff" },
+  { name: "VS Code", Icon: VscVscode, color: "#007ACC" },
 ];
 
-const techLogos = TECH_STACK.map((tech) => ({
+const techLogos = TECH_STACK.map(({ name, Icon, color }) => ({
   node: (
     <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[var(--radius-sm)] border border-border/60 bg-surface/40 backdrop-blur-sm transition-all duration-200 hover:border-accent/60 hover:bg-surface/80">
-      <TechIcon name={tech.id} className="w-4 h-4 flex-shrink-0" />
+      <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} />
       <span className="text-xs font-mono text-foreground/90 font-medium whitespace-nowrap">
-        {tech.name}
+        {name}
       </span>
     </div>
   ),
-  ariaLabel: tech.name,
+  ariaLabel: name,
 }));
 
 export function SelectedWork() {
@@ -93,7 +116,7 @@ export function SelectedWork() {
             gap={20}
             logoHeight={34}
             pauseOnHover={true}
-            scaleOnHover={false}
+            scaleOnHover={true}
             fadeOut={true}
           />
         </div>

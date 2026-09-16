@@ -9,7 +9,7 @@ type PageProps = {
 };
 
 // Tells Next.js, at build time, every valid value of [slug] —
-// so it can pre-render /work/lawtalk, /work/launch-control, etc.
+// so it can pre-render /work/lawtalk, /work/xplainify, etc.
 // as static HTML instead of building them on-demand per visitor.
 export async function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));

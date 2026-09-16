@@ -36,7 +36,7 @@ export function GlobalBackground() {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 z-0 pointer-events-none overflow-hidden"
+      className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(51,85,255,0.08),rgba(10,10,12,0))]"
     >
       <Ferrofluid
         colors={["#0a1329", "#112554", "#1e40af", "#2563eb", "#38bdf8"]}

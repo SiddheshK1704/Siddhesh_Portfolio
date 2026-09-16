@@ -31,6 +31,13 @@ const MagnetLines: React.FC<MagnetLinesProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) return;
+
     const items = container.querySelectorAll<HTMLSpanElement>('span');
 
     const onPointerMove = (pointer: { x: number; y: number }) => {

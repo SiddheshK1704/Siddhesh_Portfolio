@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle } from 'ogl';
+import { Renderer, Program, Mesh, Triangle, type OGLRenderingContext } from 'ogl';
 
 export interface FerrofluidProps {
   className?: string;
@@ -246,19 +246,28 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
-      alpha: true,
-      antialias: true
-    });
-    rendererRef.current = renderer;
-    const gl = renderer.gl;
-    const canvas = gl.canvas as HTMLCanvasElement;
-    gl.clearColor(0, 0, 0, 0);
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'block';
-    container.appendChild(canvas);
+    let renderer: Renderer;
+    let gl: OGLRenderingContext;
+    let canvas: HTMLCanvasElement;
+
+    try {
+      renderer = new Renderer({
+        dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+        alpha: true,
+        antialias: true
+      });
+      rendererRef.current = renderer;
+      gl = renderer.gl;
+      canvas = gl.canvas as HTMLCanvasElement;
+      gl.clearColor(0, 0, 0, 0);
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.display = 'block';
+      container.appendChild(canvas);
+    } catch (e) {
+      console.warn("Ferrofluid: WebGL is unavailable or failed to initialize.", e);
+      return;
+    }
 
     const { arr, count, avg } = prepColors(colors);
 

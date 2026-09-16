@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
+import PixelCard from "@/components/reactbits/PixelCard";
 import { CurrentlyBuilding } from "./CurrentlyBuilding";
 
 // AboutIntro — the editorial introduction to the About section.
@@ -64,28 +65,25 @@ export function AboutIntro() {
                 className="absolute -left-4 top-0 bottom-0 w-[2px] bg-accent/40 hidden lg:block"
               />
 
-              {/* Photo frame — the aspect-[3/4] container crops
-                  the 9:16 source to a 3:4 portrait. object-cover
-                  fills the frame; object-position centers on the
-                  lower portion where you + the lake are. */}
-              <div className="relative aspect-[3/4] rounded-[var(--radius-md)] overflow-hidden border border-border">
+              {/* Photo frame with PixelCard effect */}
+              <PixelCard
+                colors="#3355ff,#6b8cff,#000000"
+                gap={6}
+                speed={25}
+                className="relative aspect-[3/4] rounded-[var(--radius-md)] overflow-hidden border border-border bg-background transition-all duration-300 hover:border-accent/70 hover:shadow-[0_0_24px_rgba(51,85,255,0.18)]"
+              >
                 <Image
                   src="/images/sid-about.jpeg"
                   alt="Sid standing by a lake at dusk, looking out toward a treeline under an overcast sky"
                   fill
                   sizes="(min-width: 1024px) 500px, calc(100vw - 48px)"
-                  className="object-cover object-[50%_60%]"
+                  className="object-cover object-[50%_60%] pointer-events-none"
                 />
-                {/* Subtle blue tint — same technique as the Hero
-                    photo but lighter (5% instead of 10%). Gives the
-                    image a slight cool-tone cohesion with the site's
-                    blue accent without looking filtered. */}
+                {/* Subtle blue tint */}
                 <div className="absolute inset-0 bg-accent/5 mix-blend-multiply pointer-events-none" />
-                {/* Inner ring — a 1px inset border that sits on top
-                    of the image, adding a layer of depth. Without it
-                    the image edge meets the outer border too flatly. */}
+                {/* Inner ring */}
                 <div className="absolute inset-0 ring-1 ring-inset ring-border pointer-events-none" />
-              </div>
+              </PixelCard>
             </div>
           </Reveal>
 
