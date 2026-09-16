@@ -1,29 +1,15 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { CONTACT_DATA } from "@/data/contact";
 import MagnetLines from "@/components/reactbits/MagnetLines";
-import WarpText from "@/components/reactbits/WarpText";
 import { Reveal } from "@/components/ui/Reveal";
-
-const emptySubscribe = () => () => {};
-
-function useIsTouchOrReduced() {
-  return useSyncExternalStore(
-    emptySubscribe,
-    () => typeof window !== "undefined" && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches),
-    () => false
-  );
-}
 
 /**
  * Contact — the final typographic CTA of the portfolio.
- * Features clean normal typography by default with hover-only WarpText interaction.
+ * Features clean normal typography and an open decorative MagnetLines field.
  */
 export function Contact() {
-  const [isHovered, setIsHovered] = useState(false);
-  const isTouchOrReduced = useIsTouchOrReduced();
 
   const directChannels = [
     {
@@ -60,47 +46,17 @@ export function Contact() {
         <Reveal delay={0.1}>
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-12">
             
-            {/* Typography CTA: Default clean readable text, WarpText on hover only */}
-            <div
-              className="relative w-full lg:w-3/5 min-h-[180px] sm:min-h-[220px] flex items-center select-none cursor-pointer"
-              onMouseEnter={() => {
-                if (!isTouchOrReduced) setIsHovered(true);
-              }}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              {/* Clean readable default typography — visible by default */}
+            {/* Typography CTA: Clean normal text */}
+            <div className="relative w-full lg:w-3/5 flex items-center select-none">
               <h2
                 id="contact-heading"
-                className={`text-display max-w-3xl leading-[0.95] tracking-tight uppercase transition-opacity duration-200 ${
-                  isHovered && !isTouchOrReduced ? "opacity-0 pointer-events-none" : "opacity-100"
-                }`}
+                className="text-display max-w-3xl leading-[0.95] tracking-tight uppercase"
               >
                 IF YOU MADE IT <br />
                 THIS FAR, <br />
                 <span className="text-muted">WE SHOULD </span>
                 <span className="text-accent">PROBABLY TALK.</span>
               </h2>
-
-              {/* WarpText activated exclusively on hover for desktop users */}
-              {isHovered && !isTouchOrReduced && (
-                <div className="absolute inset-0 w-full h-full pointer-events-none flex items-center">
-                  <WarpText
-                    text={"IF YOU MADE IT\nTHIS FAR,\nWE SHOULD\nPROBABLY TALK."}
-                    color="#f5f5f5"
-                    fontFamily="var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
-                    warpStrength={0.12}
-                    warpScale={1.2}
-                    speed={0.5}
-                    pointerInfluence={0.45}
-                    pointerStrength={0.4}
-                    refraction={0.02}
-                    ripple={true}
-                    fontSize={44}
-                    fontWeight={700}
-                    className="w-full h-full"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Open, unboxed MagnetLines decorative interaction */}
