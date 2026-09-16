@@ -39,17 +39,20 @@ export function GlobalBackground() {
       className="fixed inset-0 z-0 pointer-events-none overflow-hidden"
     >
       <Ferrofluid
-        colors={["#0b1220", "#111f38", "#1d4ed8", "#2563eb", "#38bdf8"]}
+        colors={["#0a1329", "#112554", "#1e40af", "#2563eb", "#38bdf8"]}
         speed={reducedMotion ? 0 : 0.35}
         paused={reducedMotion}
         scale={1.4}
         turbulence={0.6}
         fluidity={0.7}
-        glow={2.2}
-        opacity={0.65}
+        rimWidth={0.65}
+        sharpness={1.3}
+        shimmer={0.4}
+        glow={1.5}
+        opacity={0.8}
         dpr={typeof window !== "undefined" && window.innerWidth < 768 ? 1 : 1.25}
         mouseInteraction={!reducedMotion}
-        mouseStrength={0.5}
+        mouseStrength={0.6}
         className="w-full h-full"
       />
     </div>

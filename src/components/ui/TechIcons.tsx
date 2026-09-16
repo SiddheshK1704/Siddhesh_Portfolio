@@ -25,6 +25,32 @@ export function TechIcon({ name, className = "w-5 h-5" }: { name: string; classN
           />
         </svg>
       );
+    case "typescript":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className}>
+          <rect width="24" height="24" rx="3" fill="#3178C6" />
+          <path d="M4 8.5h8v2.2H9.3v9H6.7v-9H4V8.5zm11 3.5c1.2-.6 2.5-.9 3.8-.9 1.4 0 2.2.6 2.2 1.6 0 1-.7 1.5-2.2 2l-1 .4c-2.4.9-3.4 2-3.4 3.9 0 2.5 1.9 4 5 4 1.4 0 2.8-.4 3.9-1l-.8-2.2c-.9.5-2 .8-3.1.8-1.5 0-2.3-.7-2.3-1.7 0-1.1.8-1.6 2.4-2.2l1-.4c2.3-.9 3.2-2.1 3.2-3.8 0-2.3-1.8-3.8-4.7-3.8-1.4 0-2.8.3-3.9.9l.8 2.3z" fill="#FFF" />
+        </svg>
+      );
+    case "pytorch":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className}>
+          <path d="M12.9 2.5l-.9.9 3.4 3.4c2.8 2.8 2.8 7.3 0 10.1-2.8 2.8-7.3 2.8-10.1 0-2.8-2.8-2.8-7.3 0-10.1l4.7-4.7-1.4-1.4-4.7 4.7c-3.6 3.6-3.6 9.4 0 13 3.6 3.6 9.4 3.6 13 0 3.6-3.6 3.6-9.4 0-13l-4-2.9z" fill="#EE4C2C" />
+          <circle cx="16.5" cy="4.5" r="1.5" fill="#EE4C2C" />
+        </svg>
+      );
+    case "tensorflow":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className}>
+          <path d="M12 2l9 5.2v10.4L16.5 20v-5.2l-4.5 2.6v5.2L7.5 20v-5.2L3 17.6V7.2L12 2zm0 3.1L5.5 8.9v6.2l3-1.7v-4.5L12 7.1l3.5 2v4.5l3 1.7V8.9L12 5.1z" fill="#FF6F00" />
+        </svg>
+      );
+    case "docker":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className}>
+          <path d="M22.5 10.5c-.3-.2-1.3-.3-2.1.2-.4-.6-1.1-1-1.8-1-.2 0-.4 0-.6.1-.5-1.5-1.9-2.3-3.4-2.3h-.5v2.5h-2V7.5H9.5v2.5h-2V7.5H5v2.5H2v3c0 3.9 3.1 7 7 7h6c4.4 0 8-3.6 8-8 0-.5-.2-1.1-.5-1.5zM4 12h1.5v1.5H4V12zm3 0h1.5v1.5H7V12zm3 0h1.5v1.5H10V12zm3 0h1.5v1.5H13V12zm3 0h1.5v1.5H16V12z" fill="#2496ED" />
+        </svg>
+      );
     case "c++":
       return (
         <svg viewBox="0 0 24 24" fill="none" className={className}>

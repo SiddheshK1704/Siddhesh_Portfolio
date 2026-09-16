@@ -23,8 +23,8 @@ export function Navbar() {
         className={cn(
           "w-full max-w-5xl flex items-center justify-between",
           "px-6 py-3.5 rounded-[var(--radius-md)] relative overflow-hidden",
-          // React Bits Glass Surface: multi-layered refraction, blur, and border shine
-          "bg-background/45 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]",
+          // React Bits Glass Surface: multi-layered refraction, blur, saturation, and border shine
+          "bg-[#0a0a0e]/75 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] backdrop-saturate-150",
           "after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-accent/40 after:to-transparent"
         )}
         aria-label="Primary"
