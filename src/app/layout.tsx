@@ -34,22 +34,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${oswald.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col relative bg-background text-foreground">
         {/* Global interactive Ferrofluid background */}
         <GlobalBackground />
 
-        {/* Decorative noise texture over the entire site. z-40 keeps
-            it above page content but below the navbar (z-50).
-            pointer-events-none + aria-hidden: purely visual, never
-            intercepts clicks or gets announced to screen readers. */}
+        {/* Decorative noise texture over the entire site */}
         <div
           aria-hidden
-          className="grain-overlay fixed inset-0 z-40 pointer-events-none"
+          className="grain-overlay fixed inset-0 z-30 pointer-events-none"
         />
-        <SmoothScroll>
-          <Navbar />
-          {children}
-        </SmoothScroll>
+        <div className="relative z-10 flex flex-col min-h-full">
+          <SmoothScroll>
+            <Navbar />
+            {children}
+          </SmoothScroll>
+        </div>
         {/* Mounted last, with z-[100] (above the navbar's z-50), so
             it fully covers the real page underneath until it's done. */}
         <IntroSequence />

@@ -31,10 +31,9 @@ export function Navbar() {
       >
         <a
           href="#top"
-          className="group relative flex items-center gap-1.5 text-small font-bold tracking-tight hover:text-accent transition-colors"
+          className="text-small font-bold tracking-tight font-sans text-foreground hover:text-accent transition-colors"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-          <span className="font-mono">SID.</span>
+          SID.
         </a>
 
         {/* Desktop links */}

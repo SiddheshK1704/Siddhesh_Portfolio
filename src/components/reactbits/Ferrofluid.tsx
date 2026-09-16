@@ -310,7 +310,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
     ro.observe(container);
 
     const onPointerMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
+      const rect = container.getBoundingClientRect();
       const sc = renderer.dpr || 1;
       const x = (e.clientX - rect.left) * sc;
       const y = (rect.height - (e.clientY - rect.top)) * sc;
@@ -320,7 +320,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       }
     };
     if (mouseInteraction) {
-      canvas.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointermove', onPointerMove);
     }
 
     const loop = (t: number) => {
@@ -352,7 +352,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove);
+      if (mouseInteraction) window.removeEventListener('pointermove', onPointerMove);
       ro.disconnect();
       if (canvas.parentElement === container) {
         container.removeChild(canvas);

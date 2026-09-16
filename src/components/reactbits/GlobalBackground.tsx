@@ -30,31 +30,27 @@ export function GlobalBackground() {
   const reducedMotion = usePrefersReducedMotion();
 
   if (!mounted) {
-    return (
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 -z-10 bg-background pointer-events-none"
-      />
-    );
+    return null;
   }
 
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 -z-10 pointer-events-none overflow-hidden transition-opacity duration-1000"
+      className="fixed inset-0 z-0 pointer-events-none overflow-hidden"
     >
       <Ferrofluid
-        colors={["#080a12", "#0c142b", "#142852", "#3355ff"]}
-        speed={reducedMotion ? 0 : 0.6}
+        colors={["#0b1220", "#111f38", "#1d4ed8", "#2563eb", "#38bdf8"]}
+        speed={reducedMotion ? 0 : 0.35}
         paused={reducedMotion}
-        scale={1.3}
-        turbulence={0.7}
-        fluidity={0.8}
-        opacity={0.32}
+        scale={1.4}
+        turbulence={0.6}
+        fluidity={0.7}
+        glow={2.2}
+        opacity={0.65}
         dpr={typeof window !== "undefined" && window.innerWidth < 768 ? 1 : 1.25}
         mouseInteraction={!reducedMotion}
         mouseStrength={0.5}
-        className="w-full h-full opacity-60"
+        className="w-full h-full"
       />
     </div>
   );

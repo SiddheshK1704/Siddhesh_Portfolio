@@ -16,6 +16,7 @@ type BlurTextProps = {
   easing?: Easing | Easing[];
   onAnimationComplete?: () => void;
   stepDuration?: number;
+  autoStart?: boolean;
 };
 
 const buildKeyframes = (
@@ -43,13 +44,15 @@ const BlurText: React.FC<BlurTextProps> = ({
   animationTo,
   easing = (t: number) => t,
   onAnimationComplete,
-  stepDuration = 0.35
+  stepDuration = 0.35,
+  autoStart = false
 }) => {
   const elements = animateBy === 'words' ? text.split(' ') : text.split('');
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState(autoStart);
   const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
+    if (autoStart) return;
     if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -62,20 +65,20 @@ const BlurText: React.FC<BlurTextProps> = ({
     );
     observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [threshold, rootMargin]);
+  }, [threshold, rootMargin, autoStart]);
 
   const defaultFrom = useMemo(
     () =>
-      direction === 'top' ? { filter: 'blur(10px)', opacity: 0, y: -50 } : { filter: 'blur(10px)', opacity: 0, y: 50 },
+      direction === 'top' ? { filter: 'blur(16px)', opacity: 0, y: -24 } : { filter: 'blur(16px)', opacity: 0, y: 24 },
     [direction]
   );
 
   const defaultTo = useMemo(
     () => [
       {
-        filter: 'blur(5px)',
-        opacity: 0.5,
-        y: direction === 'top' ? 5 : -5
+        filter: 'blur(6px)',
+        opacity: 0.65,
+        y: direction === 'top' ? 4 : -4
       },
       { filter: 'blur(0px)', opacity: 1, y: 0 }
     ],

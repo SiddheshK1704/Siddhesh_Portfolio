@@ -20,20 +20,14 @@ const FOCUS_AREAS: FocusArea[] = [
   {
     id: "swe",
     label: "Software Engineering",
-    description: "Designing reliable, clean backend APIs, typed full-stack interfaces, and maintainable application architectures.",
+    description: "Designing reliable backend APIs, typed full-stack interfaces, and maintainable application architectures.",
     tech: ["Python", "TypeScript", "Next.js", "Supabase"]
   },
   {
     id: "llm",
     label: "LLM Applications",
-    description: "Developing context-aware conversational assistants and browser extensions that synthesize complex data in real time.",
+    description: "Developing context-aware conversational assistants and browser tools that synthesize complex data in real time.",
     tech: ["Prompt Engineering", "Chrome APIs", "Embeddings", "Vector DB"]
-  },
-  {
-    id: "creative",
-    label: "Creative Development",
-    description: "Crafting fluid, interactive web experiences with WebGL shaders, Perlin noise, and buttery smooth 60fps animations.",
-    tech: ["WebGL / OGL", "Canvas 2D", "GSAP", "Tailwind CSS"]
   }
 ];
 
@@ -42,21 +36,10 @@ export function CurrentlyBuilding() {
   const activeFocus = FOCUS_AREAS.find((f) => f.id === activeId) || FOCUS_AREAS[0];
 
   return (
-    <div className="w-full rounded-[var(--radius-md)] border border-border/80 bg-surface/30 backdrop-blur-md p-5 sm:p-6 transition-all duration-300 hover:border-accent/40 shadow-xl">
-      {/* Live status header */}
-      <div className="flex items-center justify-between gap-3 pb-4 border-b border-border/60">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent" />
-          </span>
-          <span className="text-[11px] font-mono uppercase tracking-widest text-muted font-semibold">
-            CURRENT FOCUS &amp; BUILDING
-          </span>
-        </div>
-        <span className="text-[10px] font-mono text-accent/80 px-2 py-0.5 rounded border border-accent/30 bg-accent/5">
-          ACTIVE
-        </span>
+    <div className="w-full rounded-[var(--radius-md)] border border-border/80 bg-surface/30 backdrop-blur-md p-5 sm:p-6 transition-all duration-300 hover:border-accent/40 shadow-lg">
+      {/* Minimal Header */}
+      <div className="pb-3 border-b border-border/60">
+        <p className="text-eyebrow text-muted">CURRENT FOCUS</p>
       </div>
 
       {/* Focus Area Switcher Tabs */}
@@ -70,8 +53,8 @@ export function CurrentlyBuilding() {
               onClick={() => setActiveId(area.id)}
               className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-medium transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? "bg-accent text-white shadow-[0_0_12px_rgba(51,85,255,0.4)] scale-102"
-                  : "bg-surface/60 text-muted hover:text-foreground hover:bg-surface border border-border/50"
+                  ? "bg-accent text-white shadow-[0_0_12px_rgba(51,85,255,0.3)]"
+                  : "bg-surface/50 text-muted hover:text-foreground hover:bg-surface border border-border/40"
               }`}
             >
               {area.label}
@@ -81,13 +64,13 @@ export function CurrentlyBuilding() {
       </div>
 
       {/* Description & Tech Tags */}
-      <div className="pt-4 min-h-[90px]">
+      <div className="pt-4 min-h-[80px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFocus.id}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
+            exit={{ opacity: 0, y: -3 }}
             transition={{ duration: 0.2 }}
             className="flex flex-col gap-3"
           >
@@ -110,4 +93,3 @@ export function CurrentlyBuilding() {
     </div>
   );
 }
-

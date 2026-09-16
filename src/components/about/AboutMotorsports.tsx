@@ -1,35 +1,5 @@
 "use client";
 
-// AboutMotorsports — the Motorsports / Max Verstappen deep-dive.
-//
-// NOW A CLIENT COMPONENT because we need:
-//   - useRef       → to grab a DOM reference to the section element
-//   - useScroll    → to track how far this section has scrolled
-//   - useTransform → to map scroll progress to a pixel offset
-//   - useReducedMotion → to disable parallax for accessibility
-//
-// WHY "use client" IS NECESSARY:
-//   Server Components run on the server during build/request time.
-//   They have no access to the browser's DOM, scroll position, or
-//   window object. Parallax requires reading the live scroll position
-//   on every frame — that can only happen in the browser, so the
-//   component must be a Client Component.
-//
-//   The trade-off: this file now ships JavaScript to the browser.
-//   But it's a small amount — just the scroll tracking logic.
-//   The rest of the About sub-sections remain Server Components.
-//
-// PARALLAX APPROACH:
-//   The background image container is intentionally TALLER than the
-//   section (extends 80px above and below via -top-20 -bottom-20).
-//   As the section scrolls through the viewport, the image shifts
-//   from y: +30px to y: -30px — a total of 60px of movement.
-//   Because the container has 160px of extra height (80px × 2),
-//   there's always image visible, never a gap.
-//
-//   The content scrolls at normal speed on top of this. The difference
-//   in scroll rates between content and image creates the depth effect.
-
 import { useRef } from "react";
 import Image from "next/image";
 import {
@@ -38,148 +8,153 @@ import {
   useTransform,
   useReducedMotion,
 } from "motion/react";
-import { Reveal } from "@/components/ui/Reveal";
 
 const QUALITIES = ["Precision", "Instinct", "Consistency", "Pressure"];
 
 export function AboutMotorsports() {
-  // useRef creates a mutable reference object. We attach it to the
-  // section's DOM element via the ref={} prop. This lets useScroll
-  // know WHICH element to track scroll progress for — without it,
-  // useScroll would track the entire page, not just this section.
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  // useReducedMotion returns true if the user has enabled
-  // "Reduce motion" in their OS accessibility settings.
-  // When true, we set parallax offset to 0 (no movement).
   const shouldReduceMotion = useReducedMotion();
 
-  // useScroll returns a scrollYProgress MotionValue — a reactive
-  // number between 0 and 1 that updates automatically as the user
-  // scrolls. It does NOT cause React re-renders; Motion updates
-  // the DOM directly via its own animation system.
-  //
-  // The offset array defines WHEN 0 and 1 occur:
-  //   "start end"  → progress = 0 when section's TOP reaches viewport BOTTOM
-  //   "end start"  → progress = 1 when section's BOTTOM reaches viewport TOP
-  //
-  // This covers the ENTIRE time the section is visible on screen.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end end"],
   });
 
-  // useTransform maps one range to another:
-  //   Input:  scrollYProgress goes from 0 → 1
-  //   Output: imageY goes from +30 → -30 (pixels)
-  //
-  // When the section first enters the viewport (progress ≈ 0),
-  // the image is shifted 30px DOWN. As you scroll through
-  // (progress → 1), the image moves to 30px UP. Total movement: 60px.
-  //
-  // The content on top scrolls at normal speed. The image moves
-  // slower (only 60px across the entire section height), which is
-  // what creates the parallax depth illusion.
-  const imageY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    shouldReduceMotion ? [0, 0] : [30, -30]
-  );
+  // Scroll Expand transforms:
+  // 1. Initial State: Small centered rectangle containing "MY IDOL?"
+  // 2. Expansion: Rectangle expands from ~240px x 76px to 100% x 100%
+  const rectWidth = useTransform(scrollYProgress, [0.1, 0.55], ["260px", "100%"]);
+  const rectHeight = useTransform(scrollYProgress, [0.1, 0.55], ["80px", "100%"]);
+  const rectRadius = useTransform(scrollYProgress, [0.1, 0.55], ["8px", "0px"]);
+  const rectBorder = useTransform(scrollYProgress, [0.1, 0.5], ["rgba(51, 85, 255, 0.5)", "rgba(51, 85, 255, 0)"]);
 
-  // Scroll expansion: "MY IDOL?" text expands and cross-fades into the Max Verstappen portrait
-  const idolScale = useTransform(scrollYProgress, [0.05, 0.45], [0.95, 2.2]);
-  const idolOpacity = useTransform(scrollYProgress, [0.05, 0.25, 0.45], [0.3, 0.25, 0]);
-  const bgPhotoOpacity = useTransform(scrollYProgress, [0.05, 0.4], [0.3, 0.85]);
-  const bgPhotoScale = useTransform(scrollYProgress, [0.05, 0.5], [1.15, 1]);
+  // Label "MY IDOL?" fades out as the expansion gets underway
+  const idolLabelOpacity = useTransform(scrollYProgress, [0.1, 0.3], [1, 0]);
 
-  return (
-    <div ref={sectionRef} className="relative overflow-hidden min-h-[85vh] flex items-center">
+  // Image parallax and scale inside the expanding frame
+  const imageScale = useTransform(scrollYProgress, [0.1, 0.6], [1.2, 1]);
 
-      {/* Background image with scroll-expansion cross-fade and parallax */}
-      <motion.div
-        style={{
-          y: imageY,
-          opacity: shouldReduceMotion ? 0.75 : bgPhotoOpacity,
-          scale: shouldReduceMotion ? 1 : bgPhotoScale,
-        }}
-        className="absolute inset-x-0 -top-20 -bottom-20"
-      >
-        <Image
-          src="/images/max-verstappen.jpg"
-          alt="Max Verstappen"
-          fill
-          sizes="100vw"
-          className="object-cover object-top"
-        />
+  // Existing information reveals naturally after the visual expansion
+  const contentOpacity = useTransform(scrollYProgress, [0.55, 0.8], [0, 1]);
+  const contentY = useTransform(scrollYProgress, [0.55, 0.8], [30, 0]);
 
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-background/75" />
+  if (shouldReduceMotion) {
+    return (
+      <div className="relative overflow-hidden min-h-[80vh] flex items-center">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/max-verstappen.jpg"
+            alt="Max Verstappen"
+            fill
+            sizes="100vw"
+            className="object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-background/80" />
+          <div className="absolute inset-0 bg-accent/5 mix-blend-multiply" />
+        </div>
 
-        {/* Subtle blue tint */}
-        <div className="absolute inset-0 bg-accent/5 mix-blend-multiply" />
-      </motion.div>
-
-      {/* Expanding "MY IDOL?" display watermark that grows and dissolves into the portrait */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-10">
-        <motion.h2
-          style={{
-            scale: shouldReduceMotion ? 1 : idolScale,
-            opacity: shouldReduceMotion ? 0.08 : idolOpacity,
-          }}
-          className="text-[13vw] font-black tracking-widest text-accent uppercase select-none whitespace-nowrap"
-        >
-          MY IDOL?
-        </motion.h2>
-      </div>
-
-      {/* ── Content ───────────────────────────────────────── 
-          z-10 ensures the text renders ABOVE the background image
-          layer. Without it, the absolutely-positioned image div
-          would paint on top of the content. */}
-      <div className="relative z-10 px-6 lg:px-16 py-24">
-        <div className="max-w-6xl mx-auto flex flex-col gap-12">
-
-          {/* ── Section eyebrow ──────────────────────────────── */}
-          <Reveal>
-            <p className="text-eyebrow">My Idol?</p>
-          </Reveal>
-
-          {/* ── Name ─────────────────────────────────────────── */}
-          <Reveal delay={0.1}>
-            <h3 className="text-h1">Max Verstappen.</h3>
-          </Reveal>
-
-          {/* ── Accent separator ─────────────────────────────── */}
-          <Reveal delay={0.15}>
-            <div className="h-[2px] w-16 bg-accent" />
-          </Reveal>
-
-          {/* ── Qualities + copy split ───────────────────────── */}
+        <div className="relative z-10 px-6 lg:px-16 py-24 max-w-6xl mx-auto flex flex-col gap-12 w-full">
+          <p className="text-eyebrow">My Idol?</p>
+          <h3 className="text-h1">Max Verstappen.</h3>
+          <div className="h-[2px] w-16 bg-accent" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
-
-            {/* Qualities — stacked like timing data labels */}
-            <Reveal delay={0.2}>
-              <div className="flex flex-col gap-2">
-                {QUALITIES.map((q) => (
-                  <span key={q} className="text-h2 text-muted">
-                    {q}.
-                  </span>
-                ))}
-              </div>
-            </Reveal>
-
-            {/* Personal copy */}
-            <Reveal delay={0.25}>
-              <p className="text-body text-muted max-w-md leading-relaxed lg:pt-2">
-                There&apos;s something about watching someone operate at that
-                level — where every input is deliberate, every correction
-                happens before the problem is even visible. It&apos;s the kind
-                of precision and composure I find myself thinking about,
-                whether I&apos;m debugging a system or building something new.
-              </p>
-            </Reveal>
+            <div className="flex flex-col gap-2">
+              {QUALITIES.map((q) => (
+                <span key={q} className="text-h2 text-muted">
+                  {q}.
+                </span>
+              ))}
+            </div>
+            <p className="text-body text-muted max-w-md leading-relaxed lg:pt-2">
+              There&apos;s something about watching someone operate at that
+              level — where every input is deliberate, every correction
+              happens before the problem is even visible. It&apos;s the kind
+              of precision and composure I find myself thinking about,
+              whether I&apos;m debugging a system or building something new.
+            </p>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={sectionRef} className="relative h-[180vh]">
+      {/* Sticky viewport frame */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+        
+        {/* Expanding Rectangle Container */}
+        <motion.div
+          style={{
+            width: rectWidth,
+            height: rectHeight,
+            borderRadius: rectRadius,
+            borderColor: rectBorder,
+          }}
+          className="relative overflow-hidden border shadow-2xl flex items-center justify-center bg-surface"
+        >
+          {/* Max Verstappen background photo inside the expanding container */}
+          <motion.div
+            style={{ scale: imageScale }}
+            className="absolute inset-0 w-full h-full"
+          >
+            <Image
+              src="/images/max-verstappen.jpg"
+              alt="Max Verstappen"
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover object-top"
+            />
+            {/* Dark atmosphere overlay */}
+            <div className="absolute inset-0 bg-background/80" />
+            <div className="absolute inset-0 bg-accent/5 mix-blend-multiply" />
+          </motion.div>
+
+          {/* Initial Small Rectangle Label: "MY IDOL?" */}
+          <motion.div
+            style={{ opacity: idolLabelOpacity }}
+            className="relative z-20 flex items-center justify-center px-4 py-2 pointer-events-none"
+          >
+            <span className="font-mono text-xs sm:text-sm font-bold tracking-[0.25em] text-foreground uppercase">
+              MY IDOL?
+            </span>
+          </motion.div>
+
+          {/* Content revealed after visual transition */}
+          <motion.div
+            style={{
+              opacity: contentOpacity,
+              y: contentY,
+            }}
+            className="absolute inset-0 z-30 px-6 lg:px-16 py-16 sm:py-24 flex items-center pointer-events-auto"
+          >
+            <div className="max-w-6xl mx-auto w-full flex flex-col gap-10">
+              <p className="text-eyebrow">My Idol?</p>
+              <h3 className="text-h1">Max Verstappen.</h3>
+              <div className="h-[2px] w-16 bg-accent" />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
+                <div className="flex flex-col gap-2">
+                  {QUALITIES.map((q) => (
+                    <span key={q} className="text-h2 text-muted">
+                      {q}.
+                    </span>
+                  ))}
+                </div>
+
+                <p className="text-body text-muted max-w-md leading-relaxed lg:pt-2">
+                  There&apos;s something about watching someone operate at that
+                  level — where every input is deliberate, every correction
+                  happens before the problem is even visible. It&apos;s the kind
+                  of precision and composure I find myself thinking about,
+                  whether I&apos;m debugging a system or building something new.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
       </div>
     </div>
   );

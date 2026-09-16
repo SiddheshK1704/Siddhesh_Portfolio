@@ -54,10 +54,7 @@ export function Hero() {
           className="relative flex flex-col gap-6 lg:w-3/5 origin-left"
         >
           <Reveal>
-            <div className="flex items-center gap-3">
-              <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <p className="text-eyebrow">AI/ML &amp; Software Engineering</p>
-            </div>
+            <p className="text-eyebrow">AI/ML &amp; Software Engineering</p>
           </Reveal>
 
           {/* Name in a distinct rectangular badge containing Waves running subtly behind the text */}
