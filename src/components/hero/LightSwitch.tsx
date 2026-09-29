@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { cn } from "@/lib/utils";
 import { setTheme, useTheme } from "@/components/theme/useTheme";
 import type { Theme } from "@/components/theme/themeScript";
 
@@ -103,21 +102,27 @@ export function LightSwitch({ className }: { className?: string }) {
   };
 
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={on}
-      aria-label="Lights"
-      title={on ? "Lights off" : "Lights on"}
-      onClick={flip}
-      data-pending={pending ?? undefined}
-      className={cn("lswitch", className)}
-    >
-      <span className="lswitch__screw" aria-hidden="true" />
-      <span className="lswitch__slot" aria-hidden="true">
-        <span className="lswitch__lever" />
+    <div className={`lswitch-wrap ${className ?? ""}`}>
+      {/* Prompt beside the switch; appears on hover / keyboard focus */}
+      <span className="lswitch-hint" aria-hidden="true">
+        Flip the switch!
       </span>
-      <span className="lswitch__screw" aria-hidden="true" />
-    </button>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={on}
+        aria-label="Lights"
+        title={on ? "Lights off" : "Lights on"}
+        onClick={flip}
+        data-pending={pending ?? undefined}
+        className="lswitch"
+      >
+        <span className="lswitch__screw" aria-hidden="true" />
+        <span className="lswitch__slot" aria-hidden="true">
+          <span className="lswitch__lever" />
+        </span>
+        <span className="lswitch__screw" aria-hidden="true" />
+      </button>
+    </div>
   );
 }

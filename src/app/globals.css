@@ -52,6 +52,16 @@
 
   --cartoon-shadow: rgba(0, 0, 0, 0.45);
 
+  /* Work folder stage */
+  --stage-light: 70, 100, 210;
+  --stage-shadow: rgba(0, 0, 0, 0.6);
+  --folder-back: #151b3b;
+  --folder-front: linear-gradient(180deg, #26336f 0%, #1c2556 100%);
+  --folder-label: rgba(255, 255, 255, 0.5);
+  --paper-bg: linear-gradient(180deg, #151925 0%, #10131c 100%);
+  --paper-border: rgba(255, 255, 255, 0.09);
+  --paper-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.75);
+
   color-scheme: dark;
 
   /* Radius: sharp/geometric, not pill-shaped */
@@ -108,6 +118,15 @@
   --switch-screw: rgba(17, 18, 23, 0.22);
 
   --cartoon-shadow: rgba(40, 36, 28, 0.2);
+
+  --stage-light: 120, 140, 220;
+  --stage-shadow: rgba(40, 36, 28, 0.22);
+  --folder-back: #9dade6;
+  --folder-front: linear-gradient(180deg, #bac7f4 0%, #a5b4ee 100%);
+  --folder-label: rgba(20, 30, 70, 0.55);
+  --paper-bg: #ffffff;
+  --paper-border: rgba(17, 18, 23, 0.1);
+  --paper-shadow: 0 14px 28px -14px rgba(40, 36, 28, 0.3);
 
   color-scheme: light;
 }
@@ -293,13 +312,398 @@ body {
   100% { transform: translate3d(-8vw, -6vh, 0) scale(1); }
 }
 
+/* Work heading: editorial, a step below the hero wordmark */
+.text-work {
+  font-size: clamp(4.5rem, 15vw, 11rem);
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+  font-weight: 600;
+}
+
+/* The folder hint speaks the visitor's input: hover vs tap */
+.work-hint--tap { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .work-hint--hover { display: none; }
+  .work-hint--tap { display: inline; }
+}
+
+/* ---------- Work: folder stage ----------
+   One physical object on a quiet spotlight stage. Geometry is expressed as
+   custom properties per breakpoint:
+     --fw/--fh  folder size       --cw/--ch  card (paper) size
+     --spread   fan spacing       (mobile uses an explicit 2×2 grid)
+   Each paper is anchored at the folder's top-centre with its transform
+   origin at its own bottom-centre, so "closed" (tucked inside, scaled
+   down, edges peeking) and "open" (fanned out beyond the folder) are just
+   two transforms that interpolate. */
+.work-stage {
+  --fw: 300px;
+  --fh: 210px;
+  --cw: 184px;
+  --ch: 228px;
+  --spread: 150px;
+  --stage-top: 250px;
+  --ease-physical: cubic-bezier(0.2, 0.9, 0.25, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: var(--stage-top);
+  padding-bottom: 36px;
+  transition: padding-top 520ms var(--ease-physical);
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .work-stage {
+    --fw: 260px;
+    --fh: 184px;
+    --cw: 160px;
+    --ch: 204px;
+    --spread: 118px;
+    --stage-top: 220px;
+  }
+}
+
+/* Mobile: a 2×2 grid rises out of the folder; the stage makes room only
+   when it opens, so the closed folder doesn't sit under a void. */
+@media (max-width: 639px) {
+  .work-stage {
+    --fw: 220px;
+    --fh: 156px;
+    --cw: 150px;
+    --ch: 184px;
+    --stage-top: 48px;
+  }
+  .work-stage[data-open="true"] {
+    --stage-top: 380px;
+  }
+}
+
+/* Soft spotlight behind the folder; a touch brighter when it opens */
+.work-stage__light {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(980px, 140vw);
+  height: calc(var(--stage-top) + var(--fh) + 220px);
+  translate: -50% 90px;
+  background: radial-gradient(ellipse 50% 45% at 50% 62%, rgba(var(--stage-light), 0.2), transparent 70%);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+
+.work-stage[data-open="true"] .work-stage__light {
+  opacity: 1;
+}
+
+/* Elliptical contact shadow; it tightens slightly as the folder lifts */
+.work-stage__shadow {
+  width: calc(var(--fw) * 0.86);
+  height: 22px;
+  margin-top: 10px;
+  background: radial-gradient(ellipse at center, var(--stage-shadow), transparent 70%);
+  pointer-events: none;
+  transition: transform 500ms var(--ease-physical), opacity 500ms ease;
+}
+
+.work-stage[data-open="true"] .work-stage__shadow {
+  transform: scale(0.9);
+  opacity: 0.75;
+}
+
+.folder {
+  position: relative;
+  width: var(--fw);
+  height: var(--fh);
+  transition: translate 450ms var(--ease-physical);
+}
+
+.work-stage[data-open="true"] .folder {
+  translate: 0 -5px;
+}
+
+.folder__back {
+  position: absolute;
+  inset: 0;
+  border-radius: 0 12px 12px 12px;
+  background: var(--folder-back);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* The tab */
+.folder__back::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 38%;
+  height: 14px;
+  border-radius: 8px 8px 0 0;
+  background: var(--folder-back);
+}
+
+.folder__papers {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paper {
+  --x0: calc((var(--i) - 1.5) * 6px);
+  --k: calc(var(--i) - 1.5);
+  --gx: calc(var(--k) * var(--spread));
+  --t-closed: translate(calc(-50% + var(--x0)), calc(var(--fh) * 0.05 - var(--ch) * 0.42)) rotate(var(--r0)) scale(0.58);
+  --t-peek: translate(calc(-50% + var(--x0)), calc(var(--fh) * -0.05 - var(--ch) * 0.42)) rotate(var(--r0)) scale(0.58);
+  --t-open: translate(calc(-50% + var(--gx) + var(--mx, 0px)), calc(var(--y) - var(--ch) + var(--my, 0px))) rotate(var(--r));
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 10;
+  width: var(--cw);
+  height: var(--ch);
+  transform-origin: 50% 100%;
+  transform: var(--t-closed);
+  pointer-events: none;
+  /* Close: papers slide back in (reverse stagger), then drop behind the
+     front flaps once they're inside */
+  transition:
+    transform 480ms var(--ease-physical) calc((3 - var(--i)) * 30ms),
+    z-index 0s linear 420ms;
+}
+
+/* Fan (tablet + desktop): outer papers lower and tilted more */
+.paper[data-i="0"] { --y: 44px; --r: -11deg; --r0: -3deg; }
+.paper[data-i="1"] { --y: 20px; --r: -3.5deg; --r0: 2deg; }
+.paper[data-i="2"] { --y: 20px; --r: 3.5deg; --r0: -1deg; }
+.paper[data-i="3"] { --y: 44px; --r: 11deg; --r0: 3deg; }
+
+@media (max-width: 639px) {
+  .paper[data-i="0"] { --gx: calc(var(--cw) / -2 - 6px); --y: calc(34px - var(--ch) - 12px); --r: -2deg; }
+  .paper[data-i="1"] { --gx: calc(var(--cw) / 2 + 6px); --y: calc(34px - var(--ch) - 12px); --r: 2deg; }
+  .paper[data-i="2"] { --gx: calc(var(--cw) / -2 - 6px); --y: 34px; --r: -1.5deg; }
+  .paper[data-i="3"] { --gx: calc(var(--cw) / 2 + 6px); --y: 34px; --r: 1.5deg; }
+}
+
+.work-stage[data-open="true"] .paper {
+  z-index: 40;
+  transform: var(--t-open);
+  pointer-events: auto;
+  transition:
+    transform 560ms var(--ease-physical) calc(var(--i) * 45ms),
+    z-index 0s linear 0s;
+}
+
+.work-stage[data-open="true"] .paper:hover,
+.work-stage[data-open="true"] .paper:focus-within {
+  z-index: 50;
+  transform: var(--t-open) translateY(-6px) scale(1.06);
+  transition: transform 220ms var(--ease-physical), z-index 0s;
+}
+
+.paper__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px 16px 14px;
+  border-radius: 10px;
+  background: var(--paper-bg);
+  border: 1px solid var(--paper-border);
+  box-shadow: var(--paper-shadow);
+  color: var(--color-foreground);
+  text-decoration: none;
+}
+
+.paper__link:focus-visible {
+  outline-offset: 3px;
+}
+
+.paper__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-press-start-2p), monospace;
+  font-size: 8px;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.paper__meta > span:last-child {
+  text-align: right;
+}
+
+.paper__title {
+  margin-top: auto;
+  font-size: 22px;
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.paper__tagline {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.paper__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-border);
+  font-family: var(--font-press-start-2p), monospace;
+  font-size: 8px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  transition: color 200ms ease;
+}
+
+.paper:hover .paper__cta {
+  color: var(--color-accent);
+}
+
+@media (max-width: 1023px) {
+  .paper__link { padding: 13px 13px 11px; }
+  .paper__title { font-size: 18px; }
+  .paper__tagline { font-size: 11px; }
+}
+
+/* Front flaps: the React Bits folder opening, one skewing each way */
+.folder__flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 13%;
+  z-index: 20;
+  border-radius: 6px 12px 12px 12px;
+  background: var(--folder-front);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform-origin: bottom;
+  transition: transform 480ms var(--ease-physical);
+}
+
+.work-stage[data-open="true"] .folder__flap--a {
+  transform: skew(12deg) scaleY(0.62);
+}
+
+.work-stage[data-open="true"] .folder__flap--b {
+  transform: skew(-12deg) scaleY(0.62);
+}
+
+.folder__label {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-press-start-2p), monospace;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--folder-label);
+  transition: opacity 200ms ease;
+}
+
+.work-stage[data-open="true"] .folder__label {
+  opacity: 0;
+}
+
+/* Hover (closed): the React Bits "peek". The folder lifts, the front flaps
+   part and the papers rise inside it. Cards only pop out on click. */
+@media (hover: hover) {
+  .work-stage:not([data-open="true"]) .folder:hover {
+    translate: 0 -6px;
+  }
+  .work-stage:not([data-open="true"]) .folder:hover .folder__flap--a {
+    transform: skew(12deg) scaleY(0.62);
+  }
+  .work-stage:not([data-open="true"]) .folder:hover .folder__flap--b {
+    transform: skew(-12deg) scaleY(0.62);
+  }
+  .work-stage:not([data-open="true"]) .folder:hover .folder__label {
+    opacity: 0;
+  }
+  .work-stage:not([data-open="true"]) .folder:hover .paper {
+    transform: var(--t-peek);
+    transition: transform 380ms var(--ease-physical) calc(var(--i) * 25ms), z-index 0s;
+  }
+  .work-stage:has(.folder:hover) .work-stage__light {
+    opacity: 0.9;
+  }
+}
+
+/* Toggle covers the folder body; open papers sit above it */
+.folder__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border-radius: 0 12px 12px 12px;
+  background: transparent;
+}
+
+/* ---------- Pixel-art cursor ----------
+   A native CSS cursor (no JS follower): zero lag, never intercepts clicks.
+   Art lives in /public/cursor (generated from a hand-drawn pixel map, 1x
+   and 2x, integer-scaled so every pixel stays hard-edged). Both states
+   share one canvas, so the fingertip hotspot (11, 8) never moves.
+   Only for precise pointers that can hover: touch devices keep their
+   native behavior. Three declarations = graceful fallback: plain url(),
+   then prefixed and standard image-set() for crisp HiDPI rendering. */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  html * {
+    cursor: url("/cursor/hand.png") 11 8, auto;
+    cursor: -webkit-image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
+    cursor: image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
+  }
+
+  /* Click / active: the same hand with its pixel sparks */
+  html :active {
+    cursor: url("/cursor/hand-click.png") 11 8, auto;
+    cursor: -webkit-image-set(url("/cursor/hand-click.png") 1x, url("/cursor/hand-click@2x.png") 2x) 11 8, auto;
+    cursor: image-set(url("/cursor/hand-click.png") 1x, url("/cursor/hand-click@2x.png") 2x) 11 8, auto;
+  }
+
+  /* Text entry keeps the caret, where it carries real meaning */
+  html input:not([type="button"], [type="submit"], [type="checkbox"], [type="radio"]),
+  html textarea,
+  html [contenteditable="true"] {
+    cursor: text;
+  }
+}
+
+/* Reduced motion: keep the static hand, skip the spark state change */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  html :active {
+    cursor: url("/cursor/hand.png") 11 8, auto;
+    cursor: -webkit-image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
+    cursor: image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
+  }
+}
+
 /* ---------- Hero light switch ----------
    A miniature wall toggle: plate, two screws, a recessed slot and a lever.
    Only the lever moves (spring, in LightSwitch.tsx); everything else is
    themed through the --switch-* tokens. */
 .lswitch {
-  /* position comes from the component (absolute); unlayered CSS here
-     would otherwise override Tailwind's utility */
+  /* The wrapper carries the absolute positioning; the switch itself is
+     relative so its enlarged touch target (::before) anchors to it */
+  position: relative;
   width: 24px;
   height: 38px;
   border-radius: 5px;
@@ -310,8 +714,37 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 4px 0;
-  cursor: pointer;
   transition: box-shadow 200ms ease, translate 200ms ease;
+}
+
+/* "Flip the switch!" — sits to the left of the switch, vertically centred,
+   in the hero's pixel face. Purely decorative (the button is labelled). */
+.lswitch-hint {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  translate: 0 -50%;
+  white-space: nowrap;
+  font-family: var(--font-press-start-2p), monospace;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--color-muted);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 200ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lswitch-wrap:hover .lswitch-hint,
+.lswitch-wrap:has(.lswitch:focus-visible) .lswitch-hint {
+  opacity: 1;
+  transform: none;
+}
+
+@media (min-width: 1024px) {
+  .lswitch-hint { font-size: 9px; }
 }
 
 /* Enlarge the touch target without enlarging the switch */
