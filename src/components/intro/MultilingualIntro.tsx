@@ -31,7 +31,8 @@ const DISSOLVE = [0.4, 0, 0.2, 1] as const;
 export function MultilingualIntro() {
   // Always start "active" so server and client render the same overlay.
   const [active, setActive] = useState(true);
-  const [index, setIndex] = useState(0);
+  // -1 = the quiet pause before the first greeting (empty overlay)
+  const [index, setIndex] = useState(-1);
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
@@ -49,15 +50,16 @@ export function MultilingualIntro() {
     const root = document.documentElement;
 
     // See INTRO_TIMINGS for the full timeline.
-    const { step, reveal, exit } = INTRO_TIMINGS;
+    const { start, step, reveal, exit } = INTRO_TIMINGS;
     const timers = [
-      setTimeout(() => setIndex(1), step),
-      setTimeout(() => setIndex(2), step * 2),
+      setTimeout(() => setIndex(0), start),
+      setTimeout(() => setIndex(1), start + step),
+      setTimeout(() => setIndex(2), start + step * 2),
       setTimeout(() => {
         // Overlay dissolves and the hero emerges in the same moment
         setIsExiting(true);
         root.classList.remove(INTRO_PLAYING_CLASS);
-      }, reveal),
+      }, start + reveal),
       setTimeout(() => {
         try {
           sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
@@ -65,7 +67,7 @@ export function MultilingualIntro() {
         document.body.style.overflow = originalOverflow;
         setActive(false);
         window.dispatchEvent(new Event(INTRO_DONE_EVENT));
-      }, reveal + exit),
+      }, start + reveal + exit),
     ];
 
     return () => {
@@ -77,7 +79,7 @@ export function MultilingualIntro() {
 
   if (!active) return null;
 
-  const current = GREETINGS[index];
+  const current = index >= 0 ? GREETINGS[index] : null;
 
   return (
     <motion.div
@@ -99,6 +101,7 @@ export function MultilingualIntro() {
         transition={{ duration: INTRO_TIMINGS.exit / 1000, ease: DISSOLVE }}
       >
         <AnimatePresence mode="wait">
+          {current && (
           <motion.div
             key={current.text}
             exit={{ opacity: 0, filter: "blur(8px)" }}
@@ -116,6 +119,7 @@ export function MultilingualIntro() {
               className={`text-display text-foreground leading-[1.2] ${current.font}`}
             />
           </motion.div>
+          )}
         </AnimatePresence>
       </motion.div>
     </motion.div>

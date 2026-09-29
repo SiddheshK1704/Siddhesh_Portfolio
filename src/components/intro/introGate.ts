@@ -16,13 +16,16 @@ export const INTRO_STORAGE_KEY = "sid-intro-seen";
  *   2600  intro unmounted
  */
 export const INTRO_TIMINGS = {
+  /** Quiet pause on the empty overlay before "Hello" (other times are
+   *  measured from the end of this pause). */
+  start: 700,
   step: 560,
   reveal: 2000,
   exit: 600,
 } as const;
 
 /** Seconds until the hero starts emerging (used to time entrances). */
-export const INTRO_DURATION = INTRO_TIMINGS.reveal / 1000;
+export const INTRO_DURATION = (INTRO_TIMINGS.start + INTRO_TIMINGS.reveal) / 1000;
 
 /** Class on <html> while the intro covers the page; hides the hero. */
 export const INTRO_PLAYING_CLASS = "intro-playing";
