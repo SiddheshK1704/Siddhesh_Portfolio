@@ -81,7 +81,7 @@ export function CurrentlyBuilding() {
               {activeFocus.tech.map((t) => (
                 <span
                   key={t}
-                  className="px-2 py-0.5 text-[10px] font-mono text-muted/90 rounded bg-white/5 border border-white/10"
+                  className="px-2 py-0.5 text-[10px] font-mono text-muted/90 rounded bg-foreground/5 border border-foreground/10"
                 >
                   {t}
                 </span>

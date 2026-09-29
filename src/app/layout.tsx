@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar/Navbar";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { MultilingualIntro } from "@/components/intro/MultilingualIntro";
 import { INTRO_GATE_SCRIPT } from "@/components/intro/introGate";
+import { THEME_SCRIPT } from "@/components/theme/themeScript";
 import { GlobalBackground } from "@/components/reactbits/GlobalBackground";
 import "lenis/dist/lenis.css";
 import "./globals.css";
@@ -41,13 +42,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.variable} ${notoSansDevanagari.variable} h-full antialiased`}
-      // INTRO_GATE_SCRIPT may add a class to <html> before hydration
+      data-theme="dark"
+      // THEME_SCRIPT / INTRO_GATE_SCRIPT may change <html> before hydration
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col relative bg-background text-foreground selection:bg-accent/25 selection:text-white">
-        <script dangerouslySetInnerHTML={{ __html: INTRO_GATE_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT + INTRO_GATE_SCRIPT }} />
 
-        {/* Near-black, faintly blue space with slow ambient light */}
+        {/* Ambient room: dark navy by default, daylight paper in light theme */}
         <GlobalBackground />
 
         {/* Quiet noise texture */}

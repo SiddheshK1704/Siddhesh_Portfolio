@@ -210,6 +210,7 @@ const SpecularButton = ({
     // True once an idle (shine-free) frame has been drawn; resizing clears
     // the canvas, so it must redraw.
     let renderedIdle = false;
+    let lastProps: ShaderProps | null = null;
     const resize = () => {
       renderedIdle = false;
       // Fractional size + explicit center keep the SDF pinned to the exact
@@ -291,7 +292,11 @@ const SpecularButton = ({
       // Skip GPU work while the shine is invisible (pointer far away).
       // The base stroke never changes, so one idle frame is enough.
       const idle = bright < 0.002;
-      if (idle && renderedIdle) return;
+      // New props (e.g. a theme change) replace propsRef.current, so the
+      // idle frame is redrawn with the new colors.
+      const propsChanged = p !== lastProps;
+      lastProps = p;
+      if (idle && renderedIdle && !propsChanged) return;
       renderedIdle = idle;
       renderer.render({ scene: mesh });
     };

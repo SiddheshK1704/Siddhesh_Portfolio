@@ -14,7 +14,8 @@ import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/Icons";
 import SpecularButton from "@/components/reactbits/SpecularButton";
 import { INTRO_DURATION, shouldPlayIntro } from "@/components/intro/introGate";
 import { CONTACT_DATA } from "@/data/contact";
-import { TerminalDot } from "./TerminalDot";
+import { useTheme } from "@/components/theme/useTheme";
+import { LightSwitch } from "./LightSwitch";
 import {
   identityEnd,
   DOCK_AT,
@@ -32,6 +33,13 @@ const SOCIALS = [
   { ...CONTACT_DATA.linkedin, name: "LinkedIn", Icon: LinkedinIcon },
 ];
 
+// The specular edge is drawn in WebGL, so it needs literal hex colors per
+// theme (fill and text colors use CSS variables instead).
+const BUTTON_EDGES = {
+  dark: { primaryBase: "#c8ccd6", secondaryBase: "#3b404d", line: "#dfe5f5" },
+  light: { primaryBase: "#2a2c33", secondaryBase: "#c9c6be", line: "#7483b4" },
+} as const;
+
 type Geometry = {
   /** scrollY at which the word lands on the navbar brand */
   end: number;
@@ -44,6 +52,7 @@ type Geometry = {
 export function Hero() {
   const reduceMotion = useReducedMotion();
   const lenis = useLenis();
+  const btn = BUTTON_EDGES[useTheme()];
 
   // Delay the cartoon's entrance until the intro overlay has cleared,
   // otherwise it plays unseen underneath it.
@@ -151,9 +160,6 @@ export function Hero() {
       id="top"
       className="relative min-h-[100svh] flex items-center px-6 lg:px-16 pt-28 pb-20 overflow-hidden"
     >
-      {/* Small developer easter egg: a dot that unfolds into a prompt */}
-      <TerminalDot className="absolute top-8 right-4 sm:top-[13%] sm:right-[7%] lg:right-[9%] z-10" />
-
       <div className="relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
         {/* ── Typography & actions ── */}
         <div className="lg:col-span-8 flex flex-col">
@@ -182,7 +188,7 @@ export function Hero() {
                   Sid
                 </motion.span>
                 <motion.span style={{ opacity: tailOpacity }}>
-                  dhesh<span className="text-accent/70">.</span>
+                  dhesh<span className="text-accent dark:text-accent/70">.</span>
                 </motion.span>
               </motion.span>
             </span>
@@ -197,11 +203,11 @@ export function Hero() {
             <SpecularButton
               size="sm"
               radius={4}
-              tint="#f3f3f1"
+              tint="var(--color-foreground)"
               tintOpacity={1}
-              textColor="#07080d"
-              baseColor="#c8ccd6"
-              lineColor="#ffffff"
+              textColor="var(--color-background)"
+              baseColor={btn.primaryBase}
+              lineColor={btn.line}
               intensity={0.9}
               proximity={150}
               shineSize={12}
@@ -215,12 +221,12 @@ export function Hero() {
             <SpecularButton
               size="sm"
               radius={4}
-              tint="#ffffff"
+              tint="var(--color-foreground)"
               tintOpacity={0.03}
               blur={6}
-              textColor="#f3f3f1"
-              baseColor="#3b404d"
-              lineColor="#dfe5f5"
+              textColor="var(--color-foreground)"
+              baseColor={btn.secondaryBase}
+              lineColor={btn.line}
               intensity={0.85}
               proximity={150}
               shineSize={12}
@@ -235,7 +241,10 @@ export function Hero() {
 
         {/* ── Cartoon & social links ── */}
         <div className="lg:col-span-4 flex flex-col items-center lg:items-end">
-          <div className="flex flex-col items-center">
+          <div className="relative flex flex-col items-center">
+            {/* A tiny physical detail, set apart from the cartoon */}
+            <LightSwitch className="absolute -top-10 -right-12 sm:-right-16 lg:-top-12 lg:-right-20 z-10" />
+
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -252,7 +261,7 @@ export function Hero() {
                 fill
                 priority
                 sizes="(min-width: 1024px) 320px, (min-width: 640px) 270px, 230px"
-                className="object-contain pointer-events-none drop-shadow-[0_18px_28px_rgba(0,0,0,0.45)]"
+                className="object-contain pointer-events-none drop-shadow-[0_18px_28px_var(--cartoon-shadow)]"
               />
             </motion.div>
 

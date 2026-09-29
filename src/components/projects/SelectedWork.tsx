@@ -35,18 +35,18 @@ import { VscVscode } from "react-icons/vsc";
 // Authentic developer tech stack — strictly NO Stripe, NO company marketing logos.
 const TECH_STACK = [
   { name: "React", Icon: SiReact, color: "#61DAFB" },
-  { name: "Next.js", Icon: SiNextdotjs, color: "#ffffff" },
+  { name: "Next.js", Icon: SiNextdotjs, color: "var(--color-foreground)" },
   { name: "TypeScript", Icon: SiTypescript, color: "#3178C6" },
   { name: "JavaScript", Icon: SiJavascript, color: "#F7DF1E" },
   { name: "Python", Icon: SiPython, color: "#3776AB" },
   { name: "PyTorch", Icon: SiPytorch, color: "#EE4C2C" },
   { name: "TensorFlow", Icon: SiTensorflow, color: "#FF6F00" },
   { name: "FastAPI", Icon: SiFastapi, color: "#009688" },
-  { name: "Flask", Icon: SiFlask, color: "#ffffff" },
+  { name: "Flask", Icon: SiFlask, color: "var(--color-foreground)" },
   { name: "Tailwind CSS", Icon: SiTailwindcss, color: "#06B6D4" },
   { name: "Docker", Icon: SiDocker, color: "#2496ED" },
   { name: "Git", Icon: SiGit, color: "#F05032" },
-  { name: "GitHub", Icon: SiGithub, color: "#ffffff" },
+  { name: "GitHub", Icon: SiGithub, color: "var(--color-foreground)" },
   { name: "PostgreSQL", Icon: SiPostgresql, color: "#4169E1" },
   { name: "MySQL", Icon: SiMysql, color: "#4479A1" },
   { name: "Supabase", Icon: SiSupabase, color: "#3ECF8E" },
@@ -54,7 +54,7 @@ const TECH_STACK = [
   { name: "C++", Icon: SiCplusplus, color: "#00599C" },
   { name: "C", Icon: SiC, color: "#A8B9CC" },
   { name: "Java", Icon: FaJava, color: "#ED8B00" },
-  { name: "Vercel", Icon: SiVercel, color: "#ffffff" },
+  { name: "Vercel", Icon: SiVercel, color: "var(--color-foreground)" },
   { name: "VS Code", Icon: VscVscode, color: "#007ACC" },
 ];
 
@@ -108,6 +108,7 @@ export function SelectedWork() {
             pauseOnHover={true}
             scaleOnHover={true}
             fadeOut={true}
+            fadeOutColor="var(--color-background)"
           />
         </div>
       </Reveal>

@@ -70,7 +70,7 @@ export function AboutIntro() {
                 colors="#3355ff,#6b8cff,#000000"
                 gap={6}
                 speed={25}
-                className="relative aspect-[3/4] rounded-[var(--radius-md)] overflow-hidden border border-border bg-background transition-all duration-300 hover:border-accent/70 hover:shadow-[0_0_24px_rgba(51,85,255,0.18)]"
+                className="relative aspect-[3/4] rounded-[var(--radius-md)] overflow-hidden border border-border [--pixel-card-border:var(--color-border)] bg-background transition-all duration-300 hover:border-accent/70 hover:shadow-[0_0_24px_rgba(51,85,255,0.18)]"
               >
                 <Image
                   src="/images/sid-about.jpeg"

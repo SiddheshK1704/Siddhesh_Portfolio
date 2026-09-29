@@ -81,9 +81,9 @@ export function Navbar() {
           style={{ opacity: surface, y: surfaceY }}
           className={cn(
             "absolute inset-0 rounded-[var(--radius-md)]",
-            "bg-[#0a0c13]/50 backdrop-blur-xl backdrop-saturate-150",
-            "border border-white/[0.07]",
-            "shadow-[0_10px_30px_-12px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.03)]"
+            "bg-[var(--glass-bg)] backdrop-blur-xl backdrop-saturate-150",
+            "border border-[color:var(--glass-border)]",
+            "shadow-[var(--glass-shadow)]"
           )}
         />
 
@@ -137,7 +137,7 @@ export function Navbar() {
           id="mobile-menu"
           className={cn(
             "md:hidden absolute top-16 w-[calc(100%-2rem)] max-w-4xl pointer-events-auto",
-            "bg-[#0a0c13]/80 backdrop-blur-2xl border border-white/[0.07] rounded-[var(--radius-md)] shadow-2xl",
+            "bg-[var(--glass-bg-strong)] backdrop-blur-2xl border border-[color:var(--glass-border)] rounded-[var(--radius-md)] shadow-[var(--glass-shadow)]",
             "flex flex-col p-5 gap-4"
           )}
         >
@@ -145,7 +145,7 @@ export function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="text-base font-medium text-foreground hover:text-muted transition-colors py-1 border-b border-white/[0.04] last:border-none"
+              className="text-base font-medium text-foreground hover:text-muted transition-colors py-1 border-b border-foreground/5 last:border-none"
               onClick={() => setIsOpen(false)}
             >
               {link.label}

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* `dark:` follows the site theme (<html data-theme>), not the OS setting */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* ============================================
    DESIGN TOKENS
    Single source of truth for color, spacing,
@@ -17,6 +20,39 @@
     control, e.g. the cursor glow below. */
   --color-accent-dim: #1c2b80;
   --color-border: #1e1e22;
+  --color-surface: #10131b; /* raised panels, used at low opacity */
+
+  /* Glass (navbar, mobile menu) */
+  --glass-bg: rgba(10, 12, 19, 0.5);
+  --glass-bg-strong: rgba(10, 12, 19, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --glass-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+  /* Ambient room (see "Ambient atmosphere") */
+  --room-top: rgba(24, 34, 66, 0.55);
+  --room-a: #080a12;
+  --room-b: #06070c;
+  --room-c: #050609;
+  --light-key: 44, 72, 158;
+  --light-key-opacity: 0.3;
+  --light-fill: 30, 52, 122;
+  --light-fill-opacity: 0.22;
+  --vignette: rgba(2, 3, 6, 0.7);
+  --grain-opacity: 0.05;
+
+  /* Hero light switch */
+  --switch-plate: linear-gradient(180deg, #1b1e26, #121419);
+  --switch-edge: rgba(255, 255, 255, 0.09);
+  --switch-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --switch-slot: #06070b;
+  --switch-lever: linear-gradient(180deg, #454a55, #262930);
+  --switch-screw: rgba(255, 255, 255, 0.16);
+
+  --cartoon-shadow: rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
 
   /* Radius: sharp/geometric, not pill-shaped */
   --radius-sm: 2px;
@@ -34,6 +70,48 @@
   --text-eyebrow: 0.75rem;
 }
 
+/* Light theme: the same room with the lights on. Warm paper, ink text,
+   the same brand blue, and a faint cool daylight in place of the navy. */
+:root[data-theme="light"] {
+  --color-background: #f3f1ec;
+  --color-foreground: #111217;
+  --color-muted: #5e6068;
+  --color-accent: #3355ff;
+  --color-accent-rgb: 51, 85, 255;
+  --color-accent-dim: #1c2b80;
+  --color-border: #dcd9d1;
+  --color-surface: #ffffff;
+
+  --glass-bg: rgba(247, 246, 242, 0.55);
+  --glass-bg-strong: rgba(247, 246, 242, 0.88);
+  --glass-border: rgba(17, 18, 23, 0.08);
+  --glass-shadow: 0 10px 30px -14px rgba(28, 26, 22, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  --room-top: rgba(255, 255, 255, 0.7);
+  --room-a: #f7f6f2;
+  --room-b: #f3f1ec;
+  --room-c: #eeebe4;
+  --light-key: 190, 206, 240;
+  --light-key-opacity: 0.35;
+  --light-fill: 236, 222, 200;
+  --light-fill-opacity: 0.3;
+  --vignette: rgba(120, 110, 92, 0.1);
+  --grain-opacity: 0.06;
+
+  --switch-plate: linear-gradient(180deg, #ffffff, #ecebe6);
+  --switch-edge: rgba(17, 18, 23, 0.12);
+  --switch-shadow: 0 8px 16px -8px rgba(40, 36, 28, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --switch-slot: #d6d3ca;
+  --switch-lever: linear-gradient(180deg, #ffffff, #dedbd3);
+  --switch-screw: rgba(17, 18, 23, 0.22);
+
+  --cartoon-shadow: rgba(40, 36, 28, 0.2);
+
+  color-scheme: light;
+}
+
 /* Tailwind v4 theme bridge: this makes the tokens above
    available as Tailwind utility classes, e.g.
    bg-background, text-foreground, text-accent, border-border */
@@ -44,6 +122,7 @@
   --color-accent: var(--color-accent);
   --color-accent-dim: var(--color-accent-dim);
   --color-border: var(--color-border);
+  --color-surface: var(--color-surface);
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --font-sans: var(--font-geist-sans);
@@ -153,8 +232,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 70% at 50% -10%, rgba(24, 34, 66, 0.55), transparent 70%),
-    linear-gradient(180deg, #080a12 0%, #06070c 55%, #050609 100%);
+    radial-gradient(120% 70% at 50% -10%, var(--room-top), transparent 70%),
+    linear-gradient(180deg, var(--room-a) 0%, var(--room-b) 55%, var(--room-c) 100%);
 }
 
 .ambient-light {
@@ -176,30 +255,30 @@ body {
 
 /* Key light: upper left, the brightest thing in the room (still dim) */
 .ambient-light--key {
-  --light: 44, 72, 158;
+  --light: var(--light-key);
   width: 115vmax;
   height: 95vmax;
   top: -48vmax;
   left: -38vmax;
-  opacity: 0.3;
+  opacity: var(--light-key-opacity);
   animation: ambient-drift-key 150s ease-in-out infinite alternate;
 }
 
 /* Fill light: right side, lower and cooler, drifting the other way */
 .ambient-light--fill {
-  --light: 30, 52, 122;
+  --light: var(--light-fill);
   width: 90vmax;
   height: 80vmax;
   top: 10vmax;
   right: -45vmax;
-  opacity: 0.22;
+  opacity: var(--light-fill-opacity);
   animation: ambient-drift-fill 190s ease-in-out infinite alternate;
 }
 
 .ambient-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(130% 100% at 45% 35%, transparent 45%, rgba(2, 3, 6, 0.7) 100%);
+  background: radial-gradient(130% 100% at 45% 35%, transparent 45%, var(--vignette) 100%);
 }
 
 /* Small travel over a long time: roughly 1px of movement per second on a
@@ -214,116 +293,81 @@ body {
   100% { transform: translate3d(-8vw, -6vh, 0) scale(1); }
 }
 
-/* ---------- Hero terminal dot ----------
-   A small accent dot. On hover/focus/tap it drops and unfolds leftward
-   into a tiny prompt that types "> siddhesh_". The dot sits at the right
-   end of the box; one inset() clip-path interpolates from a 12px circle
-   to the full rounded box. Driven by [data-open]. */
-.tdot {
-  --tdot-w: 110px; /* fits "> siddhesh_" in 12px mono + padding */
-  --tdot-h: 32px;
-  --tdot-dot: 10px;
-  --tdot-drop: 24px;
-  --tdot-inset: calc((var(--tdot-h) - var(--tdot-dot)) / 2);
-  --tdot-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* position comes from the component (absolute) */
-  width: var(--tdot-w);
-  height: calc(var(--tdot-h) + var(--tdot-drop));
+/* ---------- Hero light switch ----------
+   A miniature wall toggle: plate, two screws, a recessed slot and a lever.
+   Only the lever moves (spring, in LightSwitch.tsx); everything else is
+   themed through the --switch-* tokens. */
+.lswitch {
+  /* position comes from the component (absolute); unlayered CSS here
+     would otherwise override Tailwind's utility */
+  width: 24px;
+  height: 38px;
+  border-radius: 5px;
+  background: var(--switch-plate);
+  box-shadow: var(--switch-shadow), 0 0 0 1px var(--switch-edge);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: box-shadow 200ms ease, translate 200ms ease;
 }
 
-.tdot__hit {
+/* Enlarge the touch target without enlarging the switch */
+.lswitch::before {
+  content: "";
   position: absolute;
-  top: calc(var(--tdot-h) / 2 - 22px);
-  right: calc(var(--tdot-h) / 2 - 22px);
-  width: 44px;
-  height: 44px;
+  inset: -10px -12px;
+}
+
+.lswitch:hover {
+  translate: 0 -1px;
+}
+
+.lswitch__screw {
+  width: 3px;
+  height: 3px;
   border-radius: 9999px;
-  cursor: pointer;
+  background: var(--switch-screw);
+}
+
+.lswitch__slot {
+  position: relative;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--switch-slot);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+}
+
+.lswitch__lever {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--switch-lever);
+  box-shadow:
+    0 1px 1.5px rgba(0, 0, 0, 0.45),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Theme sweep (View Transitions) ----------
+   LightSwitch.tsx animates ::view-transition-new(root) with an S-shaped
+   clip-path. Disable the default crossfade and keep the new theme on top. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
   z-index: 1;
 }
 
-.tdot__box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--tdot-w);
-  height: var(--tdot-h);
-  display: flex;
-  align-items: center;
-  padding-left: 12px;
-  background-color: var(--color-accent);
-  box-shadow: inset 0 0 0 1px rgba(var(--color-accent-rgb), 0);
-  clip-path: inset(
-    var(--tdot-inset) var(--tdot-inset) var(--tdot-inset)
-      calc(var(--tdot-w) - var(--tdot-inset) - var(--tdot-dot))
-      round calc(var(--tdot-dot) / 2)
-  );
-  transition:
-    clip-path 420ms var(--tdot-ease) 60ms,
-    transform 480ms var(--tdot-ease) 60ms,
-    background-color 260ms ease 60ms,
-    box-shadow 260ms ease;
-  pointer-events: none;
-}
-
-.tdot__line {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  color: rgba(243, 243, 241, 0.88);
-  opacity: 0;
-  transition: opacity 120ms ease;
-}
-
-.tdot__prompt {
-  color: var(--color-accent);
-  margin-right: 0.6em;
-}
-
-/* Stepped clip = one character per step; mono glyphs are equal width */
-.tdot__type {
-  display: inline-block;
-  clip-path: inset(0 100% 0 0);
-  /* On close, reset only after the line has faded out */
-  transition: clip-path 0ms 140ms;
-}
-
-.tdot__cursor {
-  display: inline-block;
-  opacity: 0;
-}
-
-.tdot[data-open="true"] .tdot__box {
-  clip-path: inset(0 0 0 0 round 5px);
-  transform: translateY(var(--tdot-drop));
-  background-color: rgba(10, 13, 24, 0.92);
-  box-shadow:
-    inset 0 0 0 1px rgba(var(--color-accent-rgb), 0.32),
-    0 10px 24px -12px rgba(0, 0, 0, 0.8);
-  pointer-events: auto;
-  transition-delay: 0ms, 0ms, 0ms, 120ms;
-}
-
-.tdot[data-open="true"] .tdot__line {
-  opacity: 1;
-  transition: opacity 160ms ease 220ms;
-}
-
-.tdot[data-open="true"] .tdot__type {
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 320ms steps(8, end) 260ms;
-}
-
-.tdot[data-open="true"] .tdot__cursor {
-  opacity: 1;
-  animation: tdot-blink 1.1s steps(1, end) 640ms infinite;
-}
-
-@keyframes tdot-blink {
-  0%, 55% { opacity: 1; }
-  56%, 100% { opacity: 0.12; }
+::view-transition-new(root) {
+  z-index: 2;
 }
 
 /* Respect users who've asked their OS to reduce motion.
@@ -343,11 +387,6 @@ body {
   .ambient-light {
     animation: none !important;
   }
-
-  /* Show the prompt fully typed with a steady cursor */
-  .tdot[data-open="true"] .tdot__cursor {
-    animation: none !important;
-  }
 }
 
 
@@ -358,7 +397,7 @@ body {
    with colors underneath instead of just sitting as flat grey. */
 .grain-overlay {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.05;
+  opacity: var(--grain-opacity);
   mix-blend-mode: overlay;
 }
 
