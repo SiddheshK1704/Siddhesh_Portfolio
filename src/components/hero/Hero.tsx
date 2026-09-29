@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   motion,
   useScroll,
@@ -12,7 +12,12 @@ import {
 import { useLenis } from "lenis/react";
 import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/Icons";
 import SpecularButton from "@/components/reactbits/SpecularButton";
-import { INTRO_DURATION, shouldPlayIntro } from "@/components/intro/introGate";
+import {
+  INTRO_DONE_EVENT,
+  INTRO_DURATION,
+  shouldPlayIntro,
+} from "@/components/intro/introGate";
+import LightRays from "@/components/reactbits/LightRays";
 import { CONTACT_DATA } from "@/data/contact";
 import { useTheme } from "@/components/theme/useTheme";
 import { LightSwitch } from "./LightSwitch";
@@ -40,6 +45,8 @@ const BUTTON_EDGES = {
   light: { primaryBase: "#2a2c33", secondaryBase: "#c9c6be", line: "#7483b4" },
 } as const;
 
+const noopSubscribe = () => () => {};
+
 type Geometry = {
   /** scrollY at which the word lands on the navbar brand */
   end: number;
@@ -52,7 +59,12 @@ type Geometry = {
 export function Hero() {
   const reduceMotion = useReducedMotion();
   const lenis = useLenis();
-  const btn = BUTTON_EDGES[useTheme()];
+  const theme = useTheme();
+  const btn = BUTTON_EDGES[theme];
+  // Mount the rays only on the client and only in dark mode, so nothing
+  // runs in light mode and the server markup never contains them.
+  const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const showRays = hydrated && theme === "dark";
 
   // Delay the cartoon's entrance until the intro overlay has cleared,
   // otherwise it plays unseen underneath it.
@@ -107,9 +119,13 @@ export function Hero() {
     const ro = new ResizeObserver(measure);
     ro.observe(word);
     window.addEventListener("resize", measure);
+    // The hero is slightly scaled while the intro plays; measure again
+    // once it has settled.
+    window.addEventListener(INTRO_DONE_EVENT, measure);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", measure);
+      window.removeEventListener(INTRO_DONE_EVENT, measure);
       identityEnd.set(0);
     };
   }, [geo]);
@@ -160,7 +176,7 @@ export function Hero() {
       id="top"
       className="relative min-h-[100svh] flex items-center px-6 lg:px-16 pt-28 pb-20 overflow-hidden"
     >
-      <div className="relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
+      <div className="hero-emerge relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
         {/* ── Typography & actions ── */}
         <div className="lg:col-span-8 flex flex-col">
           <h1 className="flex flex-col text-foreground select-none">
@@ -242,6 +258,21 @@ export function Hero() {
         {/* ── Cartoon & social links ── */}
         <div className="lg:col-span-4 flex flex-col items-center lg:items-end">
           <div className="relative flex flex-col items-center">
+            {/* Dark theme only: a soft spotlight falling onto the cartoon */}
+            {showRays && (
+              <LightRays
+                raysColor="#c4d2ff"
+                raysSpeed={0.35}
+                lightSpread={0.55}
+                rayLength={1.6}
+                fadeDistance={0.9}
+                saturation={0.65}
+                noiseAmount={0.06}
+                distortion={0.04}
+                className="hero-rays absolute left-1/2 -translate-x-1/2 z-0 -top-[120px] w-[420px] h-[440px] [--rays-opacity:0.55] lg:-top-[210px] lg:w-[600px] lg:h-[640px] lg:[--rays-opacity:0.8]"
+              />
+            )}
+
             {/* A tiny physical detail, set apart from the cartoon */}
             <LightSwitch className="absolute -top-10 -right-12 sm:-right-16 lg:-top-12 lg:-right-20 z-10" />
 
@@ -253,7 +284,7 @@ export function Hero() {
                   ? { duration: 0 }
                   : { duration: 0.8, delay: entranceDelay, ease: EASE }
               }
-              className="relative w-[230px] sm:w-[270px] lg:w-[320px] aspect-[1840/2168] select-none"
+              className="relative z-[1] w-[230px] sm:w-[270px] lg:w-[320px] aspect-[1840/2168] select-none"
             >
               <Image
                 src="/images/memoji_style_cartoon-removebg-preview.png"
@@ -265,7 +296,7 @@ export function Hero() {
               />
             </motion.div>
 
-            <nav aria-label="Social profiles" className="mt-4 flex items-center gap-1">
+            <nav aria-label="Social profiles" className="relative z-[1] mt-4 flex items-center gap-1">
               {SOCIALS.map(({ href, ariaLabel, name, Icon }) => (
                 <a
                   key={name}

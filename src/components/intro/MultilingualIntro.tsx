@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import BlurText from "@/components/reactbits/BlurText";
-import { INTRO_STORAGE_KEY, shouldPlayIntro } from "./introGate";
+import {
+  INTRO_DONE_EVENT,
+  INTRO_PLAYING_CLASS,
+  INTRO_STORAGE_KEY,
+  INTRO_TIMINGS,
+  shouldPlayIntro,
+} from "./introGate";
 
 const GREETINGS = [
   { text: "Hello", font: "font-sans" },
@@ -19,6 +25,8 @@ const BLUR_TO = [
   { filter: "blur(0px)", opacity: 1, y: 0 },
 ];
 const EASE = [0.22, 1, 0.36, 1] as const;
+/** Gentle ease-in-out for the overlay dissolve (matches .hero-emerge) */
+const DISSOLVE = [0.4, 0, 0.2, 1] as const;
 
 export function MultilingualIntro() {
   // Always start "active" so server and client render the same overlay.
@@ -38,30 +46,32 @@ export function MultilingualIntro() {
     // Lock scroll during intro
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const root = document.documentElement;
 
-    // ~2s total. Each word blurs in (~320ms), holds, then blurs out
-    // (~150ms) before the next one resolves.
-    //   0ms     Hello
-    //   600ms   नमस्ते
-    //   1200ms  Hola
-    //   1780ms  overlay fades
-    //   2060ms  unmount
+    // See INTRO_TIMINGS for the full timeline.
+    const { step, reveal, exit } = INTRO_TIMINGS;
     const timers = [
-      setTimeout(() => setIndex(1), 600),
-      setTimeout(() => setIndex(2), 1200),
-      setTimeout(() => setIsExiting(true), 1780),
+      setTimeout(() => setIndex(1), step),
+      setTimeout(() => setIndex(2), step * 2),
+      setTimeout(() => {
+        // Overlay dissolves and the hero emerges in the same moment
+        setIsExiting(true);
+        root.classList.remove(INTRO_PLAYING_CLASS);
+      }, reveal),
       setTimeout(() => {
         try {
           sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
         } catch {}
         document.body.style.overflow = originalOverflow;
         setActive(false);
-      }, 2060),
+        window.dispatchEvent(new Event(INTRO_DONE_EVENT));
+      }, reveal + exit),
     ];
 
     return () => {
       timers.forEach(clearTimeout);
       document.body.style.overflow = originalOverflow;
+      root.classList.remove(INTRO_PLAYING_CLASS);
     };
   }, [active]);
 
@@ -75,27 +85,39 @@ export function MultilingualIntro() {
       className="intro-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-background select-none pointer-events-auto"
       initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1 }}
-      transition={{ duration: 0.26, ease: EASE }}
+      transition={{ duration: INTRO_TIMINGS.exit / 1000, ease: DISSOLVE }}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current.text}
-          exit={{ opacity: 0, filter: "blur(8px)" }}
-          transition={{ duration: 0.15, ease: EASE }}
-        >
-          <BlurText
-            text={current.text}
-            animateBy="words"
-            autoStart
-            delay={0}
-            stepDuration={0.16}
-            easing="easeOut"
-            animationFrom={BLUR_FROM}
-            animationTo={BLUR_TO}
-            className={`text-display text-foreground leading-[1.2] ${current.font}`}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* On reveal the last word softens and drifts slightly toward the
+          viewer as the overlay dissolves; no zoom, just depth. */}
+      <motion.div
+        initial={false}
+        animate={
+          isExiting
+            ? { filter: "blur(8px)", scale: 1.03 }
+            : { filter: "blur(0px)", scale: 1 }
+        }
+        transition={{ duration: INTRO_TIMINGS.exit / 1000, ease: DISSOLVE }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current.text}
+            exit={{ opacity: 0, filter: "blur(8px)" }}
+            transition={{ duration: 0.15, ease: EASE }}
+          >
+            <BlurText
+              text={current.text}
+              animateBy="words"
+              autoStart
+              delay={0}
+              stepDuration={0.14}
+              easing="easeOut"
+              animationFrom={BLUR_FROM}
+              animationTo={BLUR_TO}
+              className={`text-display text-foreground leading-[1.2] ${current.font}`}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
     </motion.div>
   );
 }

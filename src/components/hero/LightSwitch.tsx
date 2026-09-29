@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { setTheme, useTheme } from "@/components/theme/useTheme";
 import type { Theme } from "@/components/theme/themeScript";
@@ -16,10 +15,9 @@ const SWEEP_CURVE = 0.22;
 const SWEEP_EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
 /** Pause between the lever flipping and the light sweeping in (ms). */
 const FLIP_LEAD = 160;
-/** Lever travel from centre (px): up = on (light), down = off (dark). */
-const LEVER_TRAVEL = 3.5;
-/** Short, stiff, near-critically damped: a physical click, not a bounce. */
-const LEVER_SPRING = { type: "spring", stiffness: 700, damping: 34, mass: 0.6 } as const;
+// Lever travel and its spring-like easing live in globals.css
+// (.lswitch__lever), because the lever is positioned by CSS from
+// <html data-theme>: correct on the very first paint, even in light mode.
 
 /**
  * The region covered by the new theme: everything right of an S-shaped
@@ -38,24 +36,25 @@ function sweepPath(b: number, k: number, w: number, h: number) {
  */
 export function LightSwitch({ className }: { className?: string }) {
   const theme = useTheme();
-  const reduceMotion = useReducedMotion();
-  // The lever moves immediately; the theme follows after FLIP_LEAD.
+  // Set while the lever has flipped but the sweep hasn't run yet.
   const [pending, setPending] = useState<Theme | null>(null);
   const busy = useRef(false);
 
-  const lever = pending ?? theme;
-  const on = lever === "light";
+  const on = (pending ?? theme) === "light";
 
   const flip = () => {
     if (busy.current) return;
-    const next: Theme = theme === "dark" ? "light" : "dark";
+    // Read the authoritative state (the DOM), not a possibly stale render.
+    const current: Theme =
+      document.documentElement.dataset.theme === "light" ? "light" : "dark";
+    const next: Theme = current === "dark" ? "light" : "dark";
 
     const instant =
       typeof document.startViewTransition !== "function" ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (instant) {
-      setTheme(next);
+      flushSync(() => setTheme(next));
       return;
     }
 
@@ -63,6 +62,8 @@ export function LightSwitch({ className }: { className?: string }) {
     setPending(next);
 
     window.setTimeout(() => {
+      // Old snapshot = current page (lever already flipped). The callback
+      // applies the new theme synchronously so the new snapshot is final.
       const transition = document.startViewTransition(() => {
         flushSync(() => {
           setTheme(next);
@@ -86,6 +87,9 @@ export function LightSwitch({ className }: { className?: string }) {
             {
               duration: SWEEP_DURATION,
               easing: SWEEP_EASING,
+              // Hold the fully-revealed frame until the transition tears
+              // down, so there is never a gap between end and teardown.
+              fill: "forwards",
               pseudoElement: "::view-transition-new(root)",
             }
           );
@@ -106,16 +110,12 @@ export function LightSwitch({ className }: { className?: string }) {
       aria-label="Lights"
       title={on ? "Lights off" : "Lights on"}
       onClick={flip}
+      data-pending={pending ?? undefined}
       className={cn("lswitch", className)}
     >
       <span className="lswitch__screw" aria-hidden="true" />
       <span className="lswitch__slot" aria-hidden="true">
-        <motion.span
-          className="lswitch__lever"
-          initial={false}
-          animate={{ y: on ? -LEVER_TRAVEL : LEVER_TRAVEL }}
-          transition={reduceMotion ? { duration: 0 } : LEVER_SPRING}
-        />
+        <span className="lswitch__lever" />
       </span>
       <span className="lswitch__screw" aria-hidden="true" />
     </button>
