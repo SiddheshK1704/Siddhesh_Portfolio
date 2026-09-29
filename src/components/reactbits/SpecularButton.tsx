@@ -207,7 +207,11 @@ const SpecularButton = ({
     fx.appendChild(gl.canvas);
 
     const sizeRef = { w: 1, h: 1 };
+    // True once an idle (shine-free) frame has been drawn; resizing clears
+    // the canvas, so it must redraw.
+    let renderedIdle = false;
     const resize = () => {
+      renderedIdle = false;
       // Fractional size + explicit center keep the SDF pinned to the exact
       // CSS border, instead of drifting up to a pixel from offsetWidth rounding.
       const rect = btn.getBoundingClientRect();
@@ -283,6 +287,12 @@ const SpecularButton = ({
       program.uniforms.uShineSize.value = (p.shineSize * Math.PI) / 180;
       program.uniforms.uShineFade.value = (p.shineFade * Math.PI) / 180;
       program.uniforms.uThickness.value = p.thickness * dpr;
+
+      // Skip GPU work while the shine is invisible (pointer far away).
+      // The base stroke never changes, so one idle frame is enough.
+      const idle = bright < 0.002;
+      if (idle && renderedIdle) return;
+      renderedIdle = idle;
       renderer.render({ scene: mesh });
     };
     raf = requestAnimationFrame(update);

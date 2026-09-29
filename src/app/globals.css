@@ -8,7 +8,7 @@
    ============================================ */
 :root {
   /* Color */
-  --color-background: #0a0a0c;
+  --color-background: #07080d; /* near-black with a faint blue cast */
   --color-foreground: #f3f3f1;
   --color-muted: #8c8c92;
   --color-accent: #3355ff;
@@ -110,19 +110,220 @@ body {
   text-transform: uppercase;
   color: var(--color-muted);
 }
-/* Immediate hardware-accelerated text mask reveal for the intro sequence.
-   Runs instantly on HTML first paint without waiting for React hydration. */
-@keyframes intro-mask-reveal {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  100% {
-    clip-path: inset(0 0% 0 0);
+/* Set before first paint by INTRO_GATE_SCRIPT when the intro is skipped */
+.intro-skip .intro-overlay {
+  display: none;
+}
+
+/* Hero wordmark: the dominant typographic element. */
+.text-wordmark {
+  /* Single column: "I am Siddhesh." shares one line, so leave room for
+     the pixel "I am" before it. */
+  font-size: clamp(2.75rem, 14.5vw, 7.6rem);
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+  font-weight: 600;
+}
+
+/* Press Start 2P lines ("Hi There," / "I am"). The face is very wide
+   (~1em per glyph), so it reads large at modest sizes. */
+.text-pixel-lead {
+  font-size: clamp(0.8rem, 0.9vw + 0.55rem, 1.45rem);
+  line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  /* Two columns: stay clear of the cartoon column */
+  .text-wordmark {
+    font-size: clamp(3.4rem, 8.4vw + 0.8rem, 8.8rem);
   }
 }
 
-.intro-reveal-text {
-  animation: intro-mask-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* ---------- Ambient atmosphere ----------
+   A dark room with cool light slowly moving through it:
+     1. .ambient-room   static near-black/navy base, faint light from above
+     2. .ambient-light  two huge, very soft light fields drifting on
+                        2–3 minute loops over a small distance
+     3. .ambient-vignette  keeps edges dark so light reads as depth
+     4. .grain-overlay  (below) tactile noise, also dithers gradient banding
+   No CSS filters: each light is a single radial gradient with a long,
+   eased falloff, and only its transform animates, so the compositor moves
+   a cached texture and nothing repaints. */
+.ambient-room {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(24, 34, 66, 0.55), transparent 70%),
+    linear-gradient(180deg, #080a12 0%, #06070c 55%, #050609 100%);
+}
+
+.ambient-light {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  /* Eased falloff (not a linear two-stop gradient) so there is no
+     visible edge: the field just dissolves into the room. */
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--light), 1) 0%,
+    rgba(var(--light), 0.72) 18%,
+    rgba(var(--light), 0.42) 38%,
+    rgba(var(--light), 0.18) 58%,
+    rgba(var(--light), 0.05) 78%,
+    rgba(var(--light), 0) 100%
+  );
+}
+
+/* Key light: upper left, the brightest thing in the room (still dim) */
+.ambient-light--key {
+  --light: 44, 72, 158;
+  width: 115vmax;
+  height: 95vmax;
+  top: -48vmax;
+  left: -38vmax;
+  opacity: 0.3;
+  animation: ambient-drift-key 150s ease-in-out infinite alternate;
+}
+
+/* Fill light: right side, lower and cooler, drifting the other way */
+.ambient-light--fill {
+  --light: 30, 52, 122;
+  width: 90vmax;
+  height: 80vmax;
+  top: 10vmax;
+  right: -45vmax;
+  opacity: 0.22;
+  animation: ambient-drift-fill 190s ease-in-out infinite alternate;
+}
+
+.ambient-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(130% 100% at 45% 35%, transparent 45%, rgba(2, 3, 6, 0.7) 100%);
+}
+
+/* Small travel over a long time: roughly 1px of movement per second on a
+   large screen, too slow to be read as animation. */
+@keyframes ambient-drift-key {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(9vw, 5vh, 0) scale(1.06); }
+}
+
+@keyframes ambient-drift-fill {
+  0% { transform: translate3d(0, 0, 0) scale(1.04); }
+  100% { transform: translate3d(-8vw, -6vh, 0) scale(1); }
+}
+
+/* ---------- Hero terminal dot ----------
+   A small accent dot. On hover/focus/tap it drops and unfolds leftward
+   into a tiny prompt that types "> siddhesh_". The dot sits at the right
+   end of the box; one inset() clip-path interpolates from a 12px circle
+   to the full rounded box. Driven by [data-open]. */
+.tdot {
+  --tdot-w: 110px; /* fits "> siddhesh_" in 12px mono + padding */
+  --tdot-h: 32px;
+  --tdot-dot: 10px;
+  --tdot-drop: 24px;
+  --tdot-inset: calc((var(--tdot-h) - var(--tdot-dot)) / 2);
+  --tdot-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* position comes from the component (absolute) */
+  width: var(--tdot-w);
+  height: calc(var(--tdot-h) + var(--tdot-drop));
+}
+
+.tdot__hit {
+  position: absolute;
+  top: calc(var(--tdot-h) / 2 - 22px);
+  right: calc(var(--tdot-h) / 2 - 22px);
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.tdot__box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--tdot-w);
+  height: var(--tdot-h);
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  background-color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px rgba(var(--color-accent-rgb), 0);
+  clip-path: inset(
+    var(--tdot-inset) var(--tdot-inset) var(--tdot-inset)
+      calc(var(--tdot-w) - var(--tdot-inset) - var(--tdot-dot))
+      round calc(var(--tdot-dot) / 2)
+  );
+  transition:
+    clip-path 420ms var(--tdot-ease) 60ms,
+    transform 480ms var(--tdot-ease) 60ms,
+    background-color 260ms ease 60ms,
+    box-shadow 260ms ease;
+  pointer-events: none;
+}
+
+.tdot__line {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: rgba(243, 243, 241, 0.88);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.tdot__prompt {
+  color: var(--color-accent);
+  margin-right: 0.6em;
+}
+
+/* Stepped clip = one character per step; mono glyphs are equal width */
+.tdot__type {
+  display: inline-block;
+  clip-path: inset(0 100% 0 0);
+  /* On close, reset only after the line has faded out */
+  transition: clip-path 0ms 140ms;
+}
+
+.tdot__cursor {
+  display: inline-block;
+  opacity: 0;
+}
+
+.tdot[data-open="true"] .tdot__box {
+  clip-path: inset(0 0 0 0 round 5px);
+  transform: translateY(var(--tdot-drop));
+  background-color: rgba(10, 13, 24, 0.92);
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--color-accent-rgb), 0.32),
+    0 10px 24px -12px rgba(0, 0, 0, 0.8);
+  pointer-events: auto;
+  transition-delay: 0ms, 0ms, 0ms, 120ms;
+}
+
+.tdot[data-open="true"] .tdot__line {
+  opacity: 1;
+  transition: opacity 160ms ease 220ms;
+}
+
+.tdot[data-open="true"] .tdot__type {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 320ms steps(8, end) 260ms;
+}
+
+.tdot[data-open="true"] .tdot__cursor {
+  opacity: 1;
+  animation: tdot-blink 1.1s steps(1, end) 640ms infinite;
+}
+
+@keyframes tdot-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0.12; }
 }
 
 /* Respect users who've asked their OS to reduce motion.
@@ -137,6 +338,16 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  /* Hold the ambient light still rather than snapping it to an end frame */
+  .ambient-light {
+    animation: none !important;
+  }
+
+  /* Show the prompt fully typed with a steady cursor */
+  .tdot[data-open="true"] .tdot__cursor {
+    animation: none !important;
+  }
 }
 
 
@@ -147,7 +358,7 @@ body {
    with colors underneath instead of just sitting as flat grey. */
 .grain-overlay {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.035;
+  opacity: 0.05;
   mix-blend-mode: overlay;
 }
 
