@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { LogoLoop } from "@/components/reactbits/LogoLoop";
-import Folder from "@/components/reactbits/Folder";
+import { GithubIcon } from "@/components/ui/Icons";
 import { projects } from "@/data/projects";
 
 import {
@@ -60,9 +60,9 @@ const TECH_STACK = [
 
 const techLogos = TECH_STACK.map(({ name, Icon, color }) => ({
   node: (
-    <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-[var(--radius-sm)] border border-border/60 bg-surface/40 backdrop-blur-sm transition-all duration-200 hover:border-accent/60 hover:bg-surface/80">
-      <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} />
-      <span className="text-xs font-mono text-foreground/90 font-medium whitespace-nowrap">
+    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-sm)] border border-border/70 bg-surface/30 backdrop-blur-sm transition-all duration-200 hover:border-accent/60 hover:bg-surface/80">
+      <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} />
+      <span className="text-xs font-mono text-muted hover:text-foreground font-medium whitespace-nowrap">
         {name}
       </span>
     </div>
@@ -70,51 +70,41 @@ const techLogos = TECH_STACK.map(({ name, Icon, color }) => ({
   ariaLabel: name,
 }));
 
-export function SelectedWork() {
-  const folderItems = projects.map((project, idx) => (
-    <Link
-      key={project.slug}
-      href={`/work/${project.slug}`}
-      className="w-full h-full p-2.5 sm:p-3 flex flex-col justify-between text-left group/card no-underline select-none bg-gradient-to-b from-surface/95 to-surface border border-white/10 rounded-[10px] hover:border-accent/80 transition-all shadow-xl"
-    >
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] text-accent font-semibold tracking-wider">
-            0{idx + 1}
-          </span>
-          <ArrowUpRight
-            size={13}
-            className="text-muted group-hover/card:text-accent group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 transition-all"
-          />
-        </div>
-        <h4 className="font-bold text-xs text-white group-hover/card:text-accent transition-colors line-clamp-1">
-          {project.title}
-        </h4>
-        <p className="text-[9px] text-muted line-clamp-2 leading-tight">
-          {project.tagline}
-        </p>
-      </div>
-      <div className="pt-1 border-t border-white/10 flex items-center justify-between mt-1">
-        <span className="text-[8px] font-mono text-muted uppercase truncate max-w-[60px]">
-          {project.tags[0]}
-        </span>
-        <span className="text-[9px] font-mono text-accent font-semibold flex items-center gap-0.5">
-          VIEW →
-        </span>
-      </div>
-    </Link>
-  ));
+// Technical architectural focus descriptors for each project
+const PROJECT_FOCUS: Record<string, { category: string; badge: string; highlight: string }> = {
+  lawtalk: {
+    category: "AI / RAG Pipeline",
+    badge: "Vector Search",
+    highlight: "FAISS index + Groq inference for zero-hallucination legal retrieval",
+  },
+  quicksign: {
+    category: "Computer Vision",
+    badge: "Object Detection",
+    highlight: "Custom-trained YOLOv8 model streaming real-time ASL alphabet predictions",
+  },
+  xplainify: {
+    category: "Developer Tool",
+    badge: "Chrome Extension MV3",
+    highlight: "Direct browser-to-Gemini REST calls with client-side key storage",
+  },
+  slipstream: {
+    category: "Control Systems",
+    badge: "Physics Simulation",
+    highlight: "Closed-loop PID slip regulator vs open-loop clutch benchmark at 20kHz",
+  },
+};
 
+export function SelectedWork() {
   return (
-    <section id="work" className="px-6 lg:px-16 pt-20 pb-20 flex flex-col gap-16">
-      {/* Technology Logo Loop marquee with real SVG logos */}
+    <section id="work" className="px-6 lg:px-16 pt-16 pb-28 flex flex-col gap-24">
+      {/* ── Technology Logo Loop marquee ── */}
       <Reveal>
-        <div className="w-full overflow-hidden py-3 border-y border-border/40 bg-surface/10 backdrop-blur-sm">
+        <div className="w-full overflow-hidden py-3 border-y border-border/50 bg-surface/10 backdrop-blur-sm">
           <LogoLoop
             logos={techLogos}
             speed={24}
             gap={20}
-            logoHeight={34}
+            logoHeight={32}
             pauseOnHover={true}
             scaleOnHover={true}
             fadeOut={true}
@@ -122,34 +112,133 @@ export function SelectedWork() {
         </div>
       </Reveal>
 
-      {/* Section Header */}
-      <Reveal delay={0.1}>
-        <div className="text-center flex flex-col items-center gap-3 max-w-xl mx-auto">
-          <p className="text-eyebrow">Work</p>
-          <h2 className="text-h1">What I&apos;ve Built</h2>
-        </div>
-      </Reveal>
+      {/* ── Section Header ── */}
+      <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <Reveal>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <span className="h-[2px] w-6 bg-accent" aria-hidden="true" />
+              <p className="text-eyebrow text-muted">01 / SELECTED WORK</p>
+            </div>
+            <h2 className="text-h1 font-sans tracking-tight text-foreground">
+              What I&apos;ve Built.
+            </h2>
+          </div>
+        </Reveal>
 
-      {/* Centered Large Folder component */}
-      <Reveal delay={0.15}>
-        <div className="flex flex-col items-center justify-center pt-8 pb-10">
-          <div className="relative pb-6">
-            <Folder
-              color="#3355ff"
-              size={1.6}
-              items={folderItems}
-            />
-          </div>
-          <div className="flex flex-col items-center gap-1.5 pt-6">
-            <span className="font-sans text-sm sm:text-base font-bold tracking-[0.25em] text-foreground uppercase">
-              WORK
-            </span>
-            <span className="text-xs font-mono text-muted">
-              Hover to open · Click to explore 4 projects
-            </span>
-          </div>
-        </div>
-      </Reveal>
+        <Reveal delay={0.1}>
+          <p className="text-body text-muted max-w-sm font-sans leading-relaxed">
+            Engineered systems solving practical problems — from RAG pipelines to
+            real-time computer vision.
+          </p>
+        </Reveal>
+      </div>
+
+      {/* ── Editorial Project Showcase ── */}
+      <div className="max-w-6xl mx-auto w-full flex flex-col divide-y divide-border/60">
+        {projects.map((project, idx) => {
+          const focus = PROJECT_FOCUS[project.slug] || {
+            category: "Software Engineering",
+            badge: "Full-Stack",
+            highlight: project.tagline,
+          };
+
+          return (
+            <div
+              key={project.slug}
+              className="group py-12 lg:py-16 first:pt-4 transition-colors"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* Project Index Number & Category */}
+                <div className="lg:col-span-2 flex lg:flex-col items-baseline justify-between lg:justify-start gap-2">
+                  <span className="font-mono text-sm sm:text-base font-bold text-accent tracking-wider">
+                    0{idx + 1}
+                  </span>
+                  <span className="font-mono text-[11px] text-muted tracking-widest uppercase">
+                    {focus.category}
+                  </span>
+                </div>
+
+                {/* Project Title, Summary & Details */}
+                <div className="lg:col-span-6 flex flex-col gap-4">
+                  <Link
+                    href={`/work/${project.slug}`}
+                    className="group/title inline-flex items-center gap-3 w-fit"
+                  >
+                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-sans font-bold tracking-tight text-foreground group-hover/title:text-accent transition-colors">
+                      {project.title}
+                    </h3>
+                    <ArrowUpRight
+                      size={20}
+                      className="text-muted group-hover/title:text-accent group-hover/title:translate-x-1 group-hover/title:-translate-y-1 transition-all duration-200"
+                    />
+                  </Link>
+
+                  <p className="text-sm font-medium text-foreground/80 font-sans">
+                    {project.tagline}
+                  </p>
+
+                  <p className="text-body text-muted font-sans leading-relaxed max-w-xl">
+                    {project.summary}
+                  </p>
+
+                  {/* Tech stack badges */}
+                  <div className="flex flex-wrap items-center gap-2 pt-2">
+                    {project.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="px-2.5 py-1 rounded-[var(--radius-sm)] border border-border/80 bg-surface/30 font-mono text-[11px] text-muted"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Technical Highlight Card & Direct Actions */}
+                <div className="lg:col-span-4 flex flex-col gap-5 lg:pl-6">
+                  <div className="p-5 rounded-[var(--radius-md)] border border-border/60 bg-surface/30 backdrop-blur-sm flex flex-col gap-3 group-hover:border-accent/40 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] text-accent uppercase tracking-widest font-semibold">
+                        {focus.badge}
+                      </span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-accent/80" />
+                    </div>
+                    <p className="text-xs font-mono text-muted leading-relaxed">
+                      {focus.highlight}
+                    </p>
+                  </div>
+
+                  {/* Action Links */}
+                  <div className="flex items-center gap-4 pt-1">
+                    <Link
+                      href={`/work/${project.slug}`}
+                      className="inline-flex items-center gap-2 text-xs font-mono font-medium text-foreground hover:text-accent transition-colors"
+                    >
+                      <span>Explore Project</span>
+                      <ArrowUpRight size={14} />
+                    </Link>
+
+                    <span className="text-border text-xs">/</span>
+
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-muted hover:text-foreground transition-colors"
+                    >
+                      <GithubIcon size={14} />
+                      <span>Source</span>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

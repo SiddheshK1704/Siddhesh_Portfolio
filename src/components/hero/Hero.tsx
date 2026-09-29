@@ -2,34 +2,48 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { Reveal } from "@/components/ui/Reveal";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValue,
+} from "motion/react";
 import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/Icons";
 import { CONTACT_DATA } from "@/data/contact";
 
-import Waves from "@/components/reactbits/Waves";
-import PixelCard from "@/components/reactbits/PixelCard";
-import SpecularButton from "@/components/reactbits/SpecularButton";
-import MagnetLines from "@/components/reactbits/MagnetLines";
-
 export function Hero() {
-  const heroRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
 
-  // Tracks scroll progress across exactly ONE hero-height of
-  // scrolling: 0 when the hero's top hits the viewport top (i.e.
-  // the visitor has just started scrolling), 1 when the hero's
-  // bottom hits the viewport top (i.e. it has fully scrolled past).
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  // Parallax cursor tracking for the cartoon (max 4-6px subtle translation)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const headingY = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const headingScale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -60]);
-  const photoY = useTransform(scrollYProgress, [0, 1], [0, -40]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const lineWidth = useTransform(scrollYProgress, [0.15, 0.45], ["0%", "100%"]);
+  const springConfig = { damping: 25, stiffness: 150, mass: 0.5 };
+  const cartoonX = useSpring(mouseX, springConfig);
+  const cartoonY = useSpring(mouseY, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    // Map offset to max 5px range
+    const offsetX = ((e.clientX - centerX) / (rect.width / 2)) * 5;
+    const offsetY = ((e.clientY - centerY) / (rect.height / 2)) * 5;
+    mouseX.set(offsetX);
+    mouseY.set(offsetY);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  // Scroll tracking across the hero for the Siddhesh -> SID. transition
+  const { scrollY } = useScroll();
+  const identityY = useTransform(scrollY, [0, 260], [0, -45]);
+  const identityScale = useTransform(scrollY, [0, 260], [1, 0.94]);
+  const identityOpacity = useTransform(scrollY, [180, 270], [1, 0.25]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -40,172 +54,152 @@ export function Hero() {
 
   return (
     <section
-      ref={heroRef}
+      ref={containerRef}
       id="top"
-      className="relative overflow-hidden min-h-screen flex flex-col lg:flex-row items-center gap-12 lg:gap-8 px-6 lg:px-16 pt-32 pb-16"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative min-h-[92vh] lg:min-h-screen flex items-center px-6 lg:px-16 pt-24 pb-16 overflow-hidden"
     >
-      <motion.div
-        style={{ opacity: heroOpacity }}
-        className="relative flex flex-col lg:flex-row items-center gap-12 lg:gap-8 w-full"
-      >
-        {/* Text column */}
-        <motion.div
-          style={{ y: headingY, scale: headingScale }}
-          className="relative flex flex-col gap-6 lg:w-3/5 origin-left"
-        >
-          <Reveal>
-            <p className="text-eyebrow">AI/ML &amp; Software Engineering</p>
-          </Reveal>
+      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        {/* ── LEFT COLUMN: Editorial Typography & Actions ── */}
+        <div className="lg:col-span-7 flex flex-col gap-8 order-1">
+          
+          <div className="flex flex-col gap-4">
+            {/* Playful Pixel Eyebrow: Press Start 2P */}
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="font-pixel text-xs sm:text-[13px] text-muted/90 tracking-wide select-none"
+            >
+              Hi there,
+            </motion.p>
 
-          {/* Name in a distinct rectangular badge containing Waves running subtly behind the text */}
-          <Reveal delay={0.1}>
-            <div className="relative inline-block w-full max-w-2xl rounded-[var(--radius-md)] border border-border/80 bg-surface/40 backdrop-blur-md p-6 sm:p-8 overflow-hidden group shadow-2xl transition-all duration-300 hover:border-accent/50">
-              {/* Waves running subtly behind */}
-              <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-screen transition-opacity duration-300 group-hover:opacity-75">
-                <Waves
-                  lineColor="rgba(51, 85, 255, 0.35)"
-                  waveSpeedX={0.012}
-                  waveSpeedY={0.006}
-                  waveAmpX={28}
-                  waveAmpY={16}
-                  xGap={12}
-                  yGap={28}
-                />
-              </div>
-
-              {/* MagnetLines framing accent in the top-right corner */}
-              <div
-                aria-hidden="true"
-                className="absolute top-3 right-3 pointer-events-none opacity-40 group-hover:opacity-80 transition-opacity duration-300 hidden sm:block"
-              >
-                <MagnetLines
-                  rows={3}
-                  columns={5}
-                  containerSize="54px"
-                  lineColor="#3355ff"
-                  lineWidth="1.5px"
-                  lineHeight="8px"
-                  baseAngle={-20}
-                />
-              </div>
-
-              <h1 className="relative z-10 text-display select-none tracking-tight">
-                SIDDHESH
-                <br />
-                KHANKHOJE
+            {/* Dominant Visual Statement: Geist */}
+            <motion.div
+              style={{
+                y: identityY,
+                scale: identityScale,
+                opacity: identityOpacity,
+              }}
+              className="origin-left"
+            >
+              <h1 className="text-display font-sans tracking-tight text-foreground select-none">
+                I am{" "}
+                <span className="relative inline-block text-foreground font-bold">
+                  Siddhesh
+                  <span className="text-accent">.</span>
+                </span>
               </h1>
-            </div>
-          </Reveal>
+            </motion.div>
+          </div>
 
-          <motion.div style={{ width: lineWidth }} className="h-[2px] bg-accent max-w-[120px]" />
+          {/* Description: Geist, small, restrained, supporting */}
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="text-body text-muted leading-relaxed max-w-lg font-sans font-normal"
+          >
+            Building intelligent systems and software experiences — from RAG
+            pipelines to full-stack products.
+          </motion.p>
 
-          <motion.div style={{ y: contentY }} className="flex flex-col gap-6">
-            <Reveal delay={0.2}>
-              <p className="text-body max-w-lg text-muted">
-                Building intelligent systems and software experiences — from RAG
-                pipelines to full-stack products. Currently studying AI/ML at SRM
-                University, Chennai.
-              </p>
-            </Reveal>
+          {/* Buttons: Clean, sharp, intentional, premium */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-wrap items-center gap-4 pt-2"
+          >
+            <button
+              type="button"
+              onClick={() => scrollToSection("work")}
+              className="group relative inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-sm)] bg-foreground text-background font-sans font-medium text-small tracking-tight transition-all duration-200 hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(255,255,255,0.18)] active:translate-y-0 cursor-pointer"
+            >
+              View work
+            </button>
 
-            <Reveal delay={0.3}>
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <SpecularButton
-                  size="sm"
-                  radius={8}
-                  baseColor="#3355ff"
-                  lineColor="#ffffff"
-                  tint="#3355ff"
-                  tintOpacity={0.25}
-                  intensity={1.2}
-                  textColor="#ffffff"
-                  className="!px-6 !py-3 !text-small !font-medium"
-                  onClick={() => scrollToSection("work")}
-                >
-                  View Work
-                </SpecularButton>
-                <SpecularButton
-                  size="sm"
-                  radius={8}
-                  baseColor="#27272a"
-                  lineColor="#6b8cff"
-                  tint="#18181b"
-                  tintOpacity={0.4}
-                  intensity={0.9}
-                  textColor="#f5f5f5"
-                  className="!px-6 !py-3 !text-small !font-medium"
-                  onClick={() => scrollToSection("contact")}
-                >
-                  Get in Touch
-                </SpecularButton>
-              </div>
-            </Reveal>
+            <button
+              type="button"
+              onClick={() => scrollToSection("contact")}
+              className="group relative inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-sm)] border border-border bg-surface/40 text-foreground font-sans font-medium text-small tracking-tight transition-all duration-200 hover:border-accent hover:text-accent hover:-translate-y-0.5 hover:bg-surface/80 active:translate-y-0 cursor-pointer"
+            >
+              Get in touch
+            </button>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Photo column */}
-        <motion.div style={{ y: photoY }} className="relative lg:w-2/5 w-full flex justify-center lg:justify-end">
-          <Reveal delay={0.15} className="w-full max-w-sm flex flex-col items-center gap-3">
-            <div className="group/photo relative w-full max-w-sm cursor-pointer">
-              {/* Backing geometric accent frame */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 z-0 border border-accent/20 rounded-[var(--radius-md)] bg-accent/5 transition-all duration-300 ease-out pointer-events-none group-hover/photo:border-accent group-hover/photo:translate-x-3 group-hover/photo:translate-y-3 group-hover/photo:bg-accent/10"
-              />
+        {/* ── RIGHT COLUMN: Character Cartoon & Social Links ── */}
+        <div className="lg:col-span-5 flex flex-col items-center justify-center order-2 lg:pl-6">
+          
+          {/* Cartoon Character: sitting directly against dark hero background */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.65, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{ x: cartoonX, y: cartoonY }}
+            className="relative w-full max-w-[340px] sm:max-w-[390px] lg:max-w-[430px] aspect-[460/542] flex items-center justify-center select-none"
+          >
+            <Image
+              src="/images/memoji_style_cartoon-removebg-preview.png"
+              alt="Cartoon illustration of Siddhesh"
+              fill
+              priority
+              sizes="(min-width: 1024px) 430px, (min-width: 640px) 390px, 320px"
+              className="object-contain pointer-events-none drop-shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
+            />
+          </motion.div>
 
-              {/* Foreground Photo Frame wrapped in PixelCard */}
-              <PixelCard
-                colors="#3355ff,#6b8cff,#000000"
-                gap={6}
-                speed={25}
-                className="relative z-10 w-full aspect-[3/4] border border-border rounded-[var(--radius-md)] overflow-hidden bg-background transition-all duration-300 ease-out group-hover/photo:-translate-x-1 group-hover/photo:-translate-y-1 group-hover/photo:border-accent/70 group-hover/photo:shadow-[0_0_24px_rgba(51,85,255,0.18)]"
-              >
-                <Image
-                  src="/images/sid.jpg"
-                  alt="Sid Khankhoje standing on a beach at sunset, looking toward the horizon"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 384px, 90vw"
-                  className="object-cover object-[50%_30%] transition-transform duration-500 ease-out group-hover/photo:scale-[1.02] pointer-events-none"
-                />
-                <div className="absolute inset-0 bg-accent/10 mix-blend-multiply pointer-events-none z-10" />
-                <div className="absolute inset-0 ring-1 ring-inset ring-border pointer-events-none z-10" />
-              </PixelCard>
-            </div>
+          {/* Social Links beneath the cartoon */}
+          <motion.nav
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            aria-label="Social profiles"
+            className="flex items-center gap-6 pt-5"
+          >
+            <a
+              href={CONTACT_DATA.github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={CONTACT_DATA.github.ariaLabel}
+              className="group flex items-center gap-2 text-xs font-mono text-muted hover:text-foreground transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-accent"
+            >
+              <GithubIcon size={16} className="text-muted group-hover:text-accent transition-colors" />
+              <span>GitHub</span>
+            </a>
 
-            {/* Social icons under photo */}
-            <div className="flex items-center justify-center gap-2 pt-1">
-              <a
-                href={CONTACT_DATA.github.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={CONTACT_DATA.github.ariaLabel}
-                className="p-2.5 text-muted hover:text-accent transition-all duration-200 hover:-translate-y-0.5 rounded-[var(--radius-sm)] focus-visible:outline-2 focus-visible:outline-accent"
-              >
-                <GithubIcon size={22} />
-              </a>
-              <a
-                href={CONTACT_DATA.instagram.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={CONTACT_DATA.instagram.ariaLabel}
-                className="p-2.5 text-muted hover:text-accent transition-all duration-200 hover:-translate-y-0.5 rounded-[var(--radius-sm)] focus-visible:outline-2 focus-visible:outline-accent"
-              >
-                <InstagramIcon size={22} />
-              </a>
-              <a
-                href={CONTACT_DATA.linkedin.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={CONTACT_DATA.linkedin.ariaLabel}
-                className="p-2.5 text-muted hover:text-accent transition-all duration-200 hover:-translate-y-0.5 rounded-[var(--radius-sm)] focus-visible:outline-2 focus-visible:outline-accent"
-              >
-                <LinkedinIcon size={22} />
-              </a>
-            </div>
-          </Reveal>
-        </motion.div>
-      </motion.div>
+            <span className="text-border text-xs select-none">/</span>
+
+            <a
+              href={CONTACT_DATA.instagram.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={CONTACT_DATA.instagram.ariaLabel}
+              className="group flex items-center gap-2 text-xs font-mono text-muted hover:text-foreground transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-accent"
+            >
+              <InstagramIcon size={16} className="text-muted group-hover:text-accent transition-colors" />
+              <span>Instagram</span>
+            </a>
+
+            <span className="text-border text-xs select-none">/</span>
+
+            <a
+              href={CONTACT_DATA.linkedin.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={CONTACT_DATA.linkedin.ariaLabel}
+              className="group flex items-center gap-2 text-xs font-mono text-muted hover:text-foreground transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-accent"
+            >
+              <LinkedinIcon size={16} className="text-muted group-hover:text-accent transition-colors" />
+              <span>LinkedIn</span>
+            </a>
+          </motion.nav>
+        </div>
+
+      </div>
     </section>
   );
 }

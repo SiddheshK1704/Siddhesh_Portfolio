@@ -71,6 +71,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.font-pixel {
+  font-family: var(--font-press-start-2p), monospace;
+}
+
+.font-devanagari {
+  font-family: var(--font-devanagari), sans-serif;
+}
+
 /* Utility text classes matching the fluid type scale above.
    Using these instead of Tailwind's default text-* sizes
    keeps every heading on the same intentional scale. */
