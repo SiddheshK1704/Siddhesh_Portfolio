@@ -12,9 +12,9 @@ import {
 } from "./introGate";
 
 const GREETINGS = [
-  { text: "Hello", font: "font-sans" },
-  { text: "नमस्ते", font: "font-devanagari" },
-  { text: "Hola", font: "font-sans" },
+  { text: "Hello,", font: "font-sans" },
+  { text: "नमस्ते,", font: "font-devanagari" },
+  { text: "Hola!", font: "font-sans" },
 ];
 
 // Blur Text tuned down: a short travel and moderate blur so each word
