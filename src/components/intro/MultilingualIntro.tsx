@@ -50,7 +50,15 @@ export function MultilingualIntro() {
     const root = document.documentElement;
 
     // See INTRO_TIMINGS for the full timeline.
-    const { start, step, reveal, exit } = INTRO_TIMINGS;
+    const { step, reveal, exit } = INTRO_TIMINGS;
+    // The pause before "Hello" is measured from when the dark screen first
+    // painted, not from when this script ran — otherwise slow or fast page
+    // loads shift it. Without paint timing, fall back to the full pause.
+    const firstPaint = performance.getEntriesByName("first-paint")[0]?.startTime;
+    const start =
+      firstPaint === undefined
+        ? INTRO_TIMINGS.start
+        : Math.max(0, INTRO_TIMINGS.start - (performance.now() - firstPaint));
     const timers = [
       setTimeout(() => setIndex(0), start),
       setTimeout(() => setIndex(1), start + step),

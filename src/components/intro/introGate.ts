@@ -18,7 +18,7 @@ export const INTRO_STORAGE_KEY = "sid-intro-seen";
 export const INTRO_TIMINGS = {
   /** Quiet pause on the empty overlay before "Hello" (other times are
    *  measured from the end of this pause). */
-  start: 700,
+  start: 650,
   step: 560,
   reveal: 2000,
   exit: 600,
