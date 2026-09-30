@@ -390,6 +390,125 @@ body {
   .gw-cs2    { grid-column: 4 / 10;  grid-row: 3; margin-top: 3rem; }
 }
 
+/* ---------- About: resume document ----------
+   Two stacked sheets (reusing the Work folder's paper tokens) on a faint
+   spotlight. Idle: slightly askew. When either resume link is hovered or
+   focused, the front sheet straightens and lifts and the back one fans
+   out a little; the accent rules extend. Transforms only. */
+.resume-doc {
+  --sheet-w: 220px;
+  width: var(--sheet-w);
+  aspect-ratio: 210 / 297; /* A4 */
+}
+@media (min-width: 640px) {
+  .resume-doc { --sheet-w: 260px; }
+}
+@media (min-width: 1024px) {
+  .resume-doc { --sheet-w: 280px; }
+}
+
+.resume-spot {
+  position: absolute;
+  inset: -30% -45%;
+  background: radial-gradient(closest-side, rgba(var(--stage-light), 0.16), transparent);
+  pointer-events: none;
+}
+
+.resume-sheet {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: var(--paper-bg);
+  border: 1px solid var(--paper-border);
+  box-shadow: var(--paper-shadow);
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.resume-sheet--back {
+  transform: translate(-7%, 3%) rotate(-5deg);
+  opacity: 0.7;
+}
+.resume-sheet--front {
+  padding: 11% 11% 0;
+  transform: rotate(3deg);
+}
+.resume-rule {
+  width: 2.25rem;
+  transition: width 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.resume-stage:has(a:hover, a:focus-visible) .resume-sheet--front {
+  box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.55);
+}
+/* Movement only when motion is welcome; otherwise the sheets stay put */
+@media (prefers-reduced-motion: no-preference) {
+  .resume-stage:has(a:hover, a:focus-visible) .resume-sheet--front {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  .resume-stage:has(a:hover, a:focus-visible) .resume-sheet--back {
+    transform: translate(-11%, 5%) rotate(-8deg);
+  }
+  .contact-row:hover .contact-row-label,
+  .contact-row:focus-visible .contact-row-label {
+    transform: translateX(0.75rem);
+  }
+}
+.resume-stage:has(a:hover, a:focus-visible) .resume-rule {
+  width: 3.25rem;
+}
+[data-theme="light"] .resume-stage:has(a:hover, a:focus-visible) .resume-sheet--front {
+  box-shadow: 0 30px 44px -22px rgba(40, 36, 28, 0.35);
+}
+
+/* ---------- Contact ----------
+   A faint blue light behind the headline, and the channels as large
+   editorial rows. Row hover: a quiet accent wash sweeps in from the left,
+   the label steps right, the arrow badge fills. */
+.contact-atmos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 45% at 18% 28%, rgba(var(--stage-light), 0.13), transparent 70%),
+    radial-gradient(30% 35% at 85% 30%, rgba(var(--stage-light), 0.07), transparent 70%);
+}
+
+.contact-row {
+  position: relative;
+  isolation: isolate;
+}
+.contact-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(var(--color-accent-rgb), 0.08), rgba(var(--color-accent-rgb), 0.02) 70%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.contact-row:hover::before,
+.contact-row:focus-visible::before {
+  transform: scaleX(1);
+}
+.contact-row-label {
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1), color 300ms;
+}
+.contact-row:hover .contact-row-label,
+.contact-row:focus-visible .contact-row-label {
+  color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-sheet,
+  .resume-rule,
+  .contact-row::before,
+  .contact-row-label {
+    transition: none;
+  }
+}
+
 /* ---------- Work: folder stage ----------
    One physical object on a quiet spotlight stage. Geometry is expressed as
    custom properties per breakpoint:
