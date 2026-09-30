@@ -65,6 +65,8 @@ export default async function ProjectPage({ params }: PageProps) {
   if (!project || !cs) notFound();
 
   const [lead, ...overviewRest] = cs.overview;
+  // This project's position in the Work folder (LawTalk 01 … Slipstream 04)
+  const projectNumber = String(projects.findIndex((p) => p.slug === slug) + 1).padStart(2, "0");
   const [primary, ...supporting] = cs.gallery;
 
   return (
@@ -86,7 +88,7 @@ export default async function ProjectPage({ params }: PageProps) {
         <header className="pt-16 sm:pt-24 pb-14 sm:pb-20">
           <Reveal>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <SectionLabel n="01">Project</SectionLabel>
+              <SectionLabel n={projectNumber}>Project</SectionLabel>
               <span className="font-pixel text-[9px] sm:text-[10px] leading-none uppercase text-muted/70">
                 {cs.category}
               </span>
