@@ -1,137 +1,85 @@
-import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import PixelCard from "@/components/reactbits/PixelCard";
-import { CurrentlyBuilding } from "./CurrentlyBuilding";
+import { SectionLabel } from "@/components/case-study/parts";
+import { TextType } from "@/components/reactbits/TextType";
+import { SunsetReveal } from "./SunsetReveal";
 
-// AboutIntro — the editorial introduction to the About section.
+// AboutIntro — the person first, then what they build.
+// A giant editorial ABOUT (same scale as WORK) with a quiet typed line
+// beside it; below, the story on the left and the interactive sunset
+// portrait on the right (stacked on mobile). The sunset and the typed
+// line are the only client islands.
 //
-// LAYOUT STRATEGY (vs the Hero):
-//   Hero  = text left + photo right, side by side from the start.
-//   About = full-width headline FIRST, then photo LEFT + details RIGHT.
-//
-// This reversal + the full-width headline create a fundamentally
-// different visual rhythm — same design system, different composition.
-//
-// Still a SERVER COMPONENT — no hooks needed yet. <Reveal> (a Client
-// Component) handles the entrance animations as a child.
+// Story order: person → curiosity → interests → technology → building.
+
+const TYPED = [
+  "I like figuring things out.",
+  "I like good conversations.",
+  "I like things with engines.",
+  "I like animals. All of them.",
+  "I like making things.",
+  "I notice the little things.",
+];
 
 export function AboutIntro() {
   return (
-    <div className="px-6 lg:px-16 pt-32 pb-24">
-      <div className="max-w-6xl mx-auto flex flex-col gap-16">
-
-        {/* ── Section eyebrow ────────────────────────────── */}
+    <div className="px-6 lg:px-16 pt-28 sm:pt-32 pb-20 sm:pb-28">
+      <div className="max-w-6xl mx-auto flex flex-col gap-14 sm:gap-20">
+        {/* ABOUT, with a line typing itself out beside it */}
         <Reveal>
-          <p className="text-eyebrow">About</p>
-        </Reveal>
-
-        {/* ── Full-width editorial headline ──────────────── 
-            This spans the entire content width — NOT confined
-            to a column like the Hero's name. The sentence wraps
-            naturally across 3–4 lines at text-h1 size, creating
-            an editorial text-block feel.
-            
-            Selective color: "ask a lot of questions" is the one
-            phrase pulled into accent blue — it's a defining trait,
-            so the visual treatment highlights it rather than
-            letting it blend into the rest of the sentence. */}
-        <Reveal delay={0.1}>
-          <h2 className="text-h1 max-w-3xl">
-            I build things,{" "}
-            <span className="text-accent">
-              ask a lot of questions,
-            </span>{" "}
-            and like figuring out how things work.
-          </h2>
-        </Reveal>
-
-        {/* ── Photo + details split ──────────────────────── 
-            REVERSED from the Hero: photo on the LEFT, supporting
-            details on the RIGHT. Equal 50/50 split (not the Hero's
-            60/40). This alone makes it feel like a different section.
-            
-            On mobile: stacks naturally — photo first, text below. */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-
-          {/* Photo column (LEFT on desktop) */}
-          <Reveal delay={0.15}>
-            <div className="relative max-w-md">
-              {/* Vertical accent line — a thin blue stroke to the
-                  left of the photo, visible on desktop only. This
-                  detail doesn't exist anywhere else in the site;
-                  it's unique to the About section. */}
-              <div
-                aria-hidden
-                className="absolute -left-4 top-0 bottom-0 w-[2px] bg-accent/40 hidden lg:block"
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <h2 className="text-work font-sans text-foreground">ABOUT</h2>
+            <p className="text-body sm:text-lg text-muted font-sans md:pb-3 min-h-[1.5em]">
+              <TextType
+                texts={TYPED}
+                prefix={
+                  <span className="font-pixel text-[9px] leading-none text-accent mr-3 self-center">
+                    &gt;
+                  </span>
+                }
               />
+            </p>
+          </div>
+        </Reveal>
 
-              {/* Photo frame with PixelCard effect */}
-              <PixelCard
-                colors="#3355ff,#6b8cff,#000000"
-                gap={6}
-                speed={25}
-                className="relative aspect-[3/4] rounded-[var(--radius-md)] overflow-hidden border border-border [--pixel-card-border:var(--color-border)] bg-background transition-all duration-300 hover:border-accent/70 hover:shadow-[0_0_24px_rgba(51,85,255,0.18)]"
-              >
-                <Image
-                  src="/images/sid-about.jpeg"
-                  alt="Sid standing by a lake at dusk, looking out toward a treeline under an overcast sky"
-                  fill
-                  sizes="(min-width: 1024px) 500px, calc(100vw - 48px)"
-                  className="object-cover object-[50%_60%] pointer-events-none"
-                />
-                {/* Subtle blue tint */}
-                <div className="absolute inset-0 bg-accent/5 mix-blend-multiply pointer-events-none" />
-                {/* Inner ring */}
-                <div className="absolute inset-0 ring-1 ring-inset ring-border pointer-events-none" />
-              </PixelCard>
-            </div>
-          </Reveal>
-
-          {/* Details column (RIGHT on desktop) */}
-          <div className="flex flex-col gap-10 lg:pt-12">
-            {/* Accent line — horizontal, same as the Hero's but
-                positioned differently (right column, not left). */}
-            <Reveal delay={0.2}>
-              <div className="h-[2px] w-16 bg-accent" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-start">
+          {/* The story */}
+          <div className="lg:col-span-6 flex flex-col gap-8">
+            <Reveal>
+              <SectionLabel n="01">Who I am</SectionLabel>
             </Reveal>
-
-            {/* Supporting copy — conversational, not corporate. */}
-            <Reveal delay={0.25}>
-              <p className="text-body text-muted max-w-md leading-relaxed">
-                Currently studying Computer Science at SRM University,
-                Chennai — building at the intersection of AI/ML and
-                software engineering. I&apos;d rather understand something
-                from the ground up than skim the surface, and I care
-                about details most people skip.
+            <Reveal delay={0.06}>
+              <h3 className="text-h2 font-sans text-foreground max-w-xl">
+                I&apos;m curious about almost everything,{" "}
+                <span className="text-muted">and happiest when I&apos;m figuring out how it works.</span>
+              </h3>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="text-xl sm:text-2xl leading-snug tracking-tight text-foreground/90 max-w-xl">
+                Technology, art, the way a sketch turns into something real — I&apos;d rather
+                understand things from the ground up than simply know that they work.
               </p>
             </Reveal>
-
-            {/* ── Metadata grid ────────────────────────────── 
-                Quick-reference details in an editorial sidebar
-                style — like a magazine pull-quote, not a resume.
-                
-                grid-cols-[auto_1fr]: the label column sizes to
-                its content (auto), the value column takes the
-                remaining space (1fr). This keeps labels aligned
-                regardless of their text length. */}
-            <Reveal delay={0.3}>
-              <div className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 text-small border-t border-border pt-8">
-                <span className="text-eyebrow">Location</span>
-                <span className="text-foreground">Chennai, India</span>
-
-                <span className="text-eyebrow">Focus</span>
-                <span className="text-foreground">AI/ML &amp; Software Engineering</span>
-
-                <span className="text-eyebrow">Currently</span>
-                <span className="text-foreground">CS @ SRM University</span>
-              </div>
+            <Reveal delay={0.14}>
+              <p className="text-body text-muted leading-relaxed max-w-md">
+                I love a good conversation, and the people it brings into my life. I have a soft
+                spot for dogs, cats and just about every animal. And cars and bikes? They still
+                excite me more than almost anything.
+              </p>
             </Reveal>
-
-            {/* Interactive Currently Building status */}
-            <Reveal delay={0.35}>
-              <CurrentlyBuilding />
+            <Reveal delay={0.18}>
+              <p className="text-body text-muted leading-relaxed max-w-md">
+                That same curiosity is what pulled me into software. I study Computer Science at
+                SRM University, and these days I spend most of my time where AI/ML meets real
+                products — taking ideas apart, then building them into things people can use.
+              </p>
             </Reveal>
           </div>
+
+          {/* The 8-bit me — and the real one underneath. No instructions:
+              it's there to be found. */}
+          <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
+            <SunsetReveal className="w-full max-w-[520px] lg:max-w-none" />
+          </Reveal>
         </div>
       </div>
     </div>
