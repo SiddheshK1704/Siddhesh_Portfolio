@@ -32,6 +32,56 @@ import {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+// ── Split Text (React Bits, reactbits.dev/text-animations/split-text) ──
+// Same feel as the demo: each character rises and fades in, 0.6s,
+// soft ease-out, small stagger. Rendered split from the first paint, so
+// the final layout is exactly the animated one (no swap, no shift).
+const SPLIT_DURATION = 0.6;
+const SPLIT_STAGGER = 0.035;
+/** The hero's .hero-emerge reveal (globals.css) takes ~0.9s to settle. */
+const HERO_EMERGE = 0.9;
+/** Characters in "Hi There," + "I am" + "Siddhesh." (the split headline). */
+const SPLIT_CHARS = 22;
+/** When the headline's last character has (nearly) settled. */
+const SPLIT_TOTAL = (SPLIT_CHARS - 1) * SPLIT_STAGGER + SPLIT_DURATION * 0.8;
+/** Description and buttons follow the headline, one beat apart. */
+const FOLLOW_DURATION = 0.7;
+const FOLLOW_GAP = 0.15;
+
+function SplitChars({
+  text,
+  start,
+  delay,
+  reduce,
+}: {
+  text: string;
+  /** Index of the first char in the whole headline (continuous stagger) */
+  start: number;
+  delay: number;
+  reduce: boolean | null;
+}) {
+  return (
+    <>
+      {[...text].map((c, i) => (
+        <motion.span
+          key={i}
+          aria-hidden="true"
+          className="inline-block"
+          initial={{ opacity: 0, y: "0.4em" }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={
+            reduce
+              ? { duration: 0 }
+              : { duration: SPLIT_DURATION, ease: EASE, delay: delay + (start + i) * SPLIT_STAGGER }
+          }
+        >
+          {c === " " ? " " : c}
+        </motion.span>
+      ))}
+    </>
+  );
+}
+
 const SOCIALS = [
   { ...CONTACT_DATA.github, name: "GitHub", Icon: GithubIcon },
   { ...CONTACT_DATA.instagram, name: "Instagram", Icon: InstagramIcon },
@@ -68,6 +118,10 @@ export function Hero() {
 
   // Delay the cartoon's entrance until the intro overlay has cleared,
   // otherwise it plays unseen underneath it.
+  // Split Text starts once the intro and the hero reveal have finished
+  const [splitDelay] = useState(() =>
+    shouldPlayIntro() ? INTRO_DURATION + HERO_EMERGE : 0.2
+  );
   const [entranceDelay] = useState(() =>
     shouldPlayIntro() ? INTRO_DURATION : 0.15
   );
@@ -179,21 +233,21 @@ export function Hero() {
       <div className="hero-emerge relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
         {/* ── Typography & actions ── */}
         <div className="lg:col-span-8 flex flex-col">
-          <h1 className="flex flex-col text-foreground select-none">
+          <h1 className="flex flex-col text-foreground select-none" aria-label="Hi There, I am Siddhesh.">
             {/* The greeting fades with "dhesh." so only "Sid" travels on
                 to the navbar */}
             <motion.span
               style={{ opacity: tailOpacity }}
               className="font-pixel text-pixel-lead text-muted mb-4 sm:mb-6"
             >
-              Hi There,
+              <SplitChars text="Hi There," start={0} delay={splitDelay} reduce={reduceMotion} />
             </motion.span>{" "}
             <span className="flex items-baseline whitespace-nowrap">
               <motion.span
                 style={{ opacity: tailOpacity }}
                 className="font-pixel text-pixel-lead text-muted mr-[0.8em] shrink-0"
               >
-                I am
+                <SplitChars text="I am" start={9} delay={splitDelay} reduce={reduceMotion} />
               </motion.span>{" "}
               <motion.span
                 ref={wordRef}
@@ -201,21 +255,43 @@ export function Hero() {
                 className="inline-block font-sans text-wordmark whitespace-nowrap will-change-transform"
               >
                 <motion.span ref={sidRef} style={{ opacity: sidOpacity }}>
-                  Sid
+                  <SplitChars text="Sid" start={13} delay={splitDelay} reduce={reduceMotion} />
                 </motion.span>
                 <motion.span style={{ opacity: tailOpacity }}>
-                  dhesh<span className="text-accent dark:text-accent/70">.</span>
+                  <SplitChars text="dhesh" start={16} delay={splitDelay} reduce={reduceMotion} />
+                  <span className="text-accent dark:text-accent/70">
+                    <SplitChars text="." start={21} delay={splitDelay} reduce={reduceMotion} />
+                  </span>
                 </motion.span>
               </motion.span>
             </span>
           </h1>
 
-          <p className="mt-8 sm:mt-10 text-body text-muted leading-relaxed max-w-md font-sans">
+          {/* Follows the headline: appears once "Siddhesh." has settled */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { duration: FOLLOW_DURATION, ease: EASE, delay: splitDelay + SPLIT_TOTAL }
+            }
+            className="mt-8 sm:mt-10 text-body text-muted leading-relaxed max-w-md font-sans"
+          >
             Building intelligent systems and software experiences — from RAG
             pipelines to full-stack products.
-          </p>
+          </motion.p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-3">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { duration: FOLLOW_DURATION, ease: EASE, delay: splitDelay + SPLIT_TOTAL + FOLLOW_GAP }
+            }
+            className="mt-10 flex flex-wrap items-center gap-3"
+          >
             <SpecularButton
               size="sm"
               radius={4}
@@ -252,7 +328,7 @@ export function Hero() {
             >
               Get in touch
             </SpecularButton>
-          </div>
+          </motion.div>
         </div>
 
         {/* ── Cartoon & social links ── */}
