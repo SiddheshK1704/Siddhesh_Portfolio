@@ -656,43 +656,56 @@ body {
   background: transparent;
 }
 
-/* ---------- Pixel-art cursor ----------
-   A native CSS cursor (no JS follower): zero lag, never intercepts clicks.
-   Art lives in /public/cursor (generated from a hand-drawn pixel map, 1x
-   and 2x, integer-scaled so every pixel stays hard-edged). Both states
-   share one canvas, so the fingertip hotspot (11, 8) never moves.
-   Only for precise pointers that can hover: touch devices keep their
-   native behavior. Three declarations = graceful fallback: plain url(),
-   then prefixed and standard image-set() for crisp HiDPI rendering. */
+/* ---------- Pixel-art cursors ----------
+   Every cursor on the page comes from the 8-bit reference sheet:
+     arrow        page default            (tip hotspot 8, 8)
+     hand         interactive elements    (fingertip hotspot 11, 8)
+     *-click      the same art with click sparks, only while pressed
+   Each pair shares one canvas, so the hotspot never jumps on press.
+   Native CSS cursors: no JS, no lag, never in the way of pointer events.
+   Fine pointers only: touch devices keep native behavior. */
 @media (hover: hover) and (pointer: fine) {
   html,
   html * {
-    cursor: url("/cursor/hand.png") 11 8, auto;
-    cursor: -webkit-image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
-    cursor: image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
+    cursor: url("/cursor/arrow.png") 8 8, default;
+    cursor: -webkit-image-set(url("/cursor/arrow.png") 1x, url("/cursor/arrow@2x.png") 2x) 8 8, default;
+    cursor: image-set(url("/cursor/arrow.png") 1x, url("/cursor/arrow@2x.png") 2x) 8 8, default;
   }
 
-  /* Click / active: the same hand with its pixel sparks */
   html :active {
-    cursor: url("/cursor/hand-click.png") 11 8, auto;
-    cursor: -webkit-image-set(url("/cursor/hand-click.png") 1x, url("/cursor/hand-click@2x.png") 2x) 11 8, auto;
-    cursor: image-set(url("/cursor/hand-click.png") 1x, url("/cursor/hand-click@2x.png") 2x) 11 8, auto;
+    cursor: url("/cursor/arrow-click.png") 8 8, default;
+    cursor: -webkit-image-set(url("/cursor/arrow-click.png") 1x, url("/cursor/arrow-click@2x.png") 2x) 8 8, default;
+    cursor: image-set(url("/cursor/arrow-click.png") 1x, url("/cursor/arrow-click@2x.png") 2x) 8 8, default;
   }
 
-  /* Text entry keeps the caret, where it carries real meaning */
-  html input:not([type="button"], [type="submit"], [type="checkbox"], [type="radio"]),
-  html textarea,
-  html [contenteditable="true"] {
-    cursor: text;
+  :is(a[href], button:not(:disabled), [role="button"], [role="switch"], [role="link"], summary, label[for], select),
+  :is(a[href], button:not(:disabled), [role="button"], [role="switch"], [role="link"], summary, label[for], select) * {
+    cursor: url("/cursor/hand.png") 11 8, pointer;
+    cursor: -webkit-image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, pointer;
+    cursor: image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, pointer;
+  }
+
+  :is(a[href], button:not(:disabled), [role="button"], [role="switch"], [role="link"], summary, label[for], select):active,
+  :is(a[href], button:not(:disabled), [role="button"], [role="switch"], [role="link"], summary, label[for], select):active * {
+    cursor: url("/cursor/hand-click.png") 11 8, pointer;
+    cursor: -webkit-image-set(url("/cursor/hand-click.png") 1x, url("/cursor/hand-click@2x.png") 2x) 11 8, pointer;
+    cursor: image-set(url("/cursor/hand-click.png") 1x, url("/cursor/hand-click@2x.png") 2x) 11 8, pointer;
   }
 }
 
-/* Reduced motion: keep the static hand, skip the spark state change */
+/* Reduced motion: keep the static art, skip the press swap */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
   html :active {
-    cursor: url("/cursor/hand.png") 11 8, auto;
-    cursor: -webkit-image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
-    cursor: image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, auto;
+    cursor: url("/cursor/arrow.png") 8 8, default;
+    cursor: -webkit-image-set(url("/cursor/arrow.png") 1x, url("/cursor/arrow@2x.png") 2x) 8 8, default;
+    cursor: image-set(url("/cursor/arrow.png") 1x, url("/cursor/arrow@2x.png") 2x) 8 8, default;
+  }
+
+  :is(a[href], button:not(:disabled), [role="button"], [role="switch"], [role="link"], summary, label[for], select):active,
+  :is(a[href], button:not(:disabled), [role="button"], [role="switch"], [role="link"], summary, label[for], select):active * {
+    cursor: url("/cursor/hand.png") 11 8, pointer;
+    cursor: -webkit-image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, pointer;
+    cursor: image-set(url("/cursor/hand.png") 1x, url("/cursor/hand@2x.png") 2x) 11 8, pointer;
   }
 }
 
