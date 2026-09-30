@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/case-study/parts";
 
@@ -48,36 +47,6 @@ export function MotorsportsIntro() {
                 impossible. His drive became a blueprint for how I approach both passion and life.
               </p>
             </Reveal>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8">
-            <Reveal className="lg:col-span-3">
-              <MarginNote>Slipstream</MarginNote>
-            </Reveal>
-            <div className="lg:col-span-7 flex flex-col gap-6">
-              <Reveal delay={0.06}>
-                <p className="text-body text-muted leading-relaxed">
-                  I built{" "}
-                  <Link
-                    href="/work/slipstream"
-                    className="text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-accent"
-                  >
-                    Slipstream
-                  </Link>{" "}
-                  to share that passion. This place is a tribute to the machines that push
-                  boundaries, redefine performance, and spark dreams. Whether it&apos;s the violent
-                  precision of a supercar or the timeless elegance of a classic, every machine
-                  carries a story worth telling.
-                </p>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <p className="text-body text-muted leading-relaxed">
-                  <span className="text-foreground">Explore. Compare. Dream.</span> Slipstream is
-                  more than a collection—it&apos;s a celebration of automotive excellence, crafted
-                  for those who feel alive behind a revving engine.
-                </p>
-              </Reveal>
-            </div>
           </div>
         </div>
 
