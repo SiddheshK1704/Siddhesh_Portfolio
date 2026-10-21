@@ -298,8 +298,8 @@ export function Hero() {
             }
             className="mt-10 flex flex-wrap items-center gap-3"
           >
-            {/* data-mascot-wink: the hero mascot winks when these are hovered */}
-            <span data-mascot-wink className="inline-flex">
+            {/* data-mascot-react: hovering these sometimes startles the hero mascot */}
+            <span data-mascot-react className="inline-flex">
               <SpecularButton
                 size="sm"
                 radius={4}
@@ -319,7 +319,7 @@ export function Hero() {
               </SpecularButton>
             </span>
 
-            <span data-mascot-wink className="inline-flex">
+            <span data-mascot-react className="inline-flex">
               <SpecularButton
                 size="sm"
                 radius={4}

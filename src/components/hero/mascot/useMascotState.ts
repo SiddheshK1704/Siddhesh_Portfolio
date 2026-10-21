@@ -14,6 +14,8 @@ const HYSTERESIS = 10;
 /** Random wink interval while idle (ms), around 8s. */
 const WINK_MIN = 7000;
 const WINK_MAX = 9000;
+/** Chance that hovering a hero CTA startles the mascot (else no reaction). */
+const CTA_SURPRISE_CHANCE = 0.25;
 
 type Look = "look-left" | "look-right" | "look-up" | "look-down";
 type OneShot = "wave" | "wink" | "surprised";
@@ -84,13 +86,13 @@ export function useMascotState(mascotRef: RefObject<HTMLElement | null>): Mascot
     return () => window.removeEventListener(THEME_PULLED_EVENT, onPulled);
   }, [fire]);
 
-  // Hovering a hero CTA earns a wink (one delegated listener).
+  // Hovering a hero CTA sometimes startles him (one delegated listener).
   useEffect(() => {
     if (!open || reduceMotion) return;
     const onOver = (e: MouseEvent) => {
-      const cta = (e.target as Element | null)?.closest?.("[data-mascot-wink]");
+      const cta = (e.target as Element | null)?.closest?.("[data-mascot-react]");
       if (!cta || cta.contains(e.relatedTarget as Node | null)) return;
-      fire("wink");
+      if (Math.random() < CTA_SURPRISE_CHANCE) fire("surprised");
     };
     document.addEventListener("mouseover", onOver);
     return () => document.removeEventListener("mouseover", onOver);
