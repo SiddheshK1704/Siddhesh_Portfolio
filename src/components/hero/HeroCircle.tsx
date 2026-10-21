@@ -21,6 +21,8 @@ const GEOMETRY = {
 } as const;
 /** Height of the hover / tap zone along the hero's top edge at rest. */
 const REST_ZONE = 64;
+/** How long the circle stays out after the cursor leaves it (ms). */
+const CLOSE_DELAY = 5000;
 const DROP_SPRING = { type: "spring", stiffness: 420, damping: 32 } as const;
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
@@ -104,12 +106,21 @@ export function HeroCircle({
   const restY = g.peek - g.top - g.size / 2 - (g.scale * g.size) / 2;
 
   const openRef = useRef(false);
+  const closeTimer = useRef<number | undefined>(undefined);
   const show = useCallback((next: boolean) => {
+    window.clearTimeout(closeTimer.current);
     if (openRef.current === next) return;
     openRef.current = next;
     setOpen(next);
     setPhase(next ? "opening" : "closing");
   }, []);
+
+  // Mouse leaving: linger for CLOSE_DELAY, unless it comes back.
+  const scheduleClose = useCallback(() => {
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => show(false), CLOSE_DELAY);
+  }, [show]);
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
   // Touch: a tap anywhere outside the zone closes the open circle.
   useEffect(() => {
@@ -159,7 +170,7 @@ export function HeroCircle({
             aria-label={open ? "Hide the mascot" : "Peek at the mascot"}
             onPointerDown={(e) => (lastPointer.current = e.pointerType)}
             onPointerEnter={(e) => e.pointerType === "mouse" && show(true)}
-            onPointerLeave={(e) => e.pointerType === "mouse" && show(false)}
+            onPointerLeave={(e) => e.pointerType === "mouse" && scheduleClose()}
             onClick={onClick}
             onKeyDown={(e) => e.key === "Escape" && show(false)}
             initial={{ opacity: 0 }}

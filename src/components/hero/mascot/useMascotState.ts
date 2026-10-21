@@ -11,9 +11,9 @@ import { ONE_SHOT_MS, type MascotFrame } from "./frames";
 const DEAD_ZONE = 80;
 /** Extra degrees the current look direction keeps beyond its sector. */
 const HYSTERESIS = 10;
-/** Random wink interval while idle (ms). */
+/** Random wink interval while idle (ms), around 8s. */
 const WINK_MIN = 7000;
-const WINK_MAX = 12000;
+const WINK_MAX = 9000;
 
 type Look = "look-left" | "look-right" | "look-up" | "look-down";
 type OneShot = "wave" | "wink" | "surprised";
@@ -138,7 +138,7 @@ export function useMascotState(mascotRef: RefObject<HTMLElement | null>): Mascot
 
   const idle = open && !oneShot && !look;
 
-  // Random wink every 7–12s while idle and open.
+  // Random wink every ~8s (7–9s) while idle and open.
   useEffect(() => {
     if (!idle || reduceMotion) return;
     const t = window.setTimeout(() => fire("wink"), WINK_MIN + Math.random() * (WINK_MAX - WINK_MIN));
