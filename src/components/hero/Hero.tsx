@@ -19,8 +19,9 @@ import {
 } from "@/components/intro/introGate";
 import LightRays from "@/components/reactbits/LightRays";
 import { CONTACT_DATA } from "@/data/contact";
+import { HeroCircle } from "./HeroCircle";
+import { HeroMascot } from "./mascot/HeroMascot";
 import { useTheme } from "@/components/theme/useTheme";
-import { LightSwitch } from "./LightSwitch";
 import {
   identityEnd,
   DOCK_AT,
@@ -230,6 +231,11 @@ export function Hero() {
       id="top"
       className="relative min-h-[100svh] flex items-center px-6 lg:px-16 pt-28 pb-20 overflow-hidden"
     >
+      {/* Hidden blue circle along the top edge; drops in on hover */}
+      <HeroCircle delay={entranceDelay}>
+        <HeroMascot />
+      </HeroCircle>
+
       <div className="hero-emerge relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
         {/* ── Typography & actions ── */}
         <div className="lg:col-span-8 flex flex-col">
@@ -292,42 +298,47 @@ export function Hero() {
             }
             className="mt-10 flex flex-wrap items-center gap-3"
           >
-            <SpecularButton
-              size="sm"
-              radius={4}
-              tint="var(--color-foreground)"
-              tintOpacity={1}
-              textColor="var(--color-background)"
-              baseColor={btn.primaryBase}
-              lineColor={btn.line}
-              intensity={0.9}
-              proximity={150}
-              shineSize={12}
-              shineFade={36}
-              className="font-sans tracking-tight"
-              onClick={() => scrollToSection("work")}
-            >
-              View work
-            </SpecularButton>
+            {/* data-mascot-react: hovering these sometimes startles the hero mascot */}
+            <span data-mascot-react className="inline-flex">
+              <SpecularButton
+                size="sm"
+                radius={4}
+                tint="var(--color-foreground)"
+                tintOpacity={1}
+                textColor="var(--color-background)"
+                baseColor={btn.primaryBase}
+                lineColor={btn.line}
+                intensity={0.9}
+                proximity={150}
+                shineSize={12}
+                shineFade={36}
+                className="font-sans tracking-tight"
+                onClick={() => scrollToSection("work")}
+              >
+                View work
+              </SpecularButton>
+            </span>
 
-            <SpecularButton
-              size="sm"
-              radius={4}
-              tint="var(--color-foreground)"
-              tintOpacity={0.03}
-              blur={6}
-              textColor="var(--color-foreground)"
-              baseColor={btn.secondaryBase}
-              lineColor={btn.line}
-              intensity={0.85}
-              proximity={150}
-              shineSize={12}
-              shineFade={36}
-              className="font-sans tracking-tight"
-              onClick={() => scrollToSection("contact")}
-            >
-              Get in touch
-            </SpecularButton>
+            <span data-mascot-react className="inline-flex">
+              <SpecularButton
+                size="sm"
+                radius={4}
+                tint="var(--color-foreground)"
+                tintOpacity={0.03}
+                blur={6}
+                textColor="var(--color-foreground)"
+                baseColor={btn.secondaryBase}
+                lineColor={btn.line}
+                intensity={0.85}
+                proximity={150}
+                shineSize={12}
+                shineFade={36}
+                className="font-sans tracking-tight"
+                onClick={() => scrollToSection("contact")}
+              >
+                Get in touch
+              </SpecularButton>
+            </span>
           </motion.div>
         </div>
 
@@ -348,9 +359,6 @@ export function Hero() {
                 className="hero-rays absolute left-1/2 -translate-x-1/2 z-0 -top-[120px] w-[420px] h-[440px] [--rays-opacity:0.55] lg:-top-[210px] lg:w-[600px] lg:h-[640px] lg:[--rays-opacity:0.8]"
               />
             )}
-
-            {/* A tiny physical detail, set apart from the cartoon */}
-            <LightSwitch className="absolute -top-10 -right-12 sm:-right-16 lg:-top-12 lg:-right-20 z-10" />
 
             <motion.div
               initial={{ opacity: 0, y: 14 }}

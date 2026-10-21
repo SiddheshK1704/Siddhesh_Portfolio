@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
-import { setTheme, useTheme } from "@/components/theme/useTheme";
-import type { Theme } from "@/components/theme/themeScript";
+import { setTheme } from "./useTheme";
+import type { Theme } from "./themeScript";
 
 // ── Tweakables ─────────────────────────────────────────────────────
 /** Duration of the S-shaped light sweep across the viewport (ms). */
@@ -12,11 +12,9 @@ const SWEEP_DURATION = 900;
 const SWEEP_CURVE = 0.22;
 /** Easing of the sweep (smooth ease-in-out). */
 const SWEEP_EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
-/** Pause between the lever flipping and the light sweeping in (ms). */
-const FLIP_LEAD = 160;
-// Lever travel and its spring-like easing live in globals.css
-// (.lswitch__lever), because the lever is positioned by CSS from
-// <html data-theme>: correct on the very first paint, even in light mode.
+
+/** Window event fired every time the theme trigger is pulled. */
+export const THEME_PULLED_EVENT = "theme-pulled";
 
 /**
  * The region covered by the new theme: everything right of an S-shaped
@@ -30,19 +28,18 @@ function sweepPath(b: number, k: number, w: number, h: number) {
 }
 
 /**
- * Miniature wall light switch. Flipping it sweeps the new theme across
- * the page from the switch's side, behind an S-shaped edge.
+ * Returns `flip(lead)`: toggles the theme, sweeping the new one across the
+ * page from the right edge behind an S-shaped boundary. `lead` (ms) delays
+ * the sweep so the trigger's own animation reads first. Instant when View
+ * Transitions are unsupported or the user prefers reduced motion.
  */
-export function LightSwitch({ className }: { className?: string }) {
-  const theme = useTheme();
-  // Set while the lever has flipped but the sweep hasn't run yet.
-  const [pending, setPending] = useState<Theme | null>(null);
+export function useThemeFlip() {
   const busy = useRef(false);
 
-  const on = (pending ?? theme) === "light";
-
-  const flip = () => {
+  return useCallback((lead = 0) => {
     if (busy.current) return;
+    window.dispatchEvent(new CustomEvent(THEME_PULLED_EVENT));
+
     // Read the authoritative state (the DOM), not a possibly stale render.
     const current: Theme =
       document.documentElement.dataset.theme === "light" ? "light" : "dark";
@@ -58,16 +55,12 @@ export function LightSwitch({ className }: { className?: string }) {
     }
 
     busy.current = true;
-    setPending(next);
 
     window.setTimeout(() => {
-      // Old snapshot = current page (lever already flipped). The callback
-      // applies the new theme synchronously so the new snapshot is final.
+      // The callback applies the new theme synchronously so the new
+      // snapshot is final.
       const transition = document.startViewTransition(() => {
-        flushSync(() => {
-          setTheme(next);
-          setPending(null);
-        });
+        flushSync(() => setTheme(next));
       });
 
       transition.ready
@@ -98,31 +91,6 @@ export function LightSwitch({ className }: { className?: string }) {
       transition.finished.finally(() => {
         busy.current = false;
       });
-    }, FLIP_LEAD);
-  };
-
-  return (
-    <div className={`lswitch-wrap ${className ?? ""}`}>
-      {/* Prompt beside the switch; appears on hover / keyboard focus */}
-      <span className="lswitch-hint" aria-hidden="true">
-        Flip the switch!
-      </span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={on}
-        aria-label="Lights"
-        title={on ? "Lights off" : "Lights on"}
-        onClick={flip}
-        data-pending={pending ?? undefined}
-        className="lswitch"
-      >
-        <span className="lswitch__screw" aria-hidden="true" />
-        <span className="lswitch__slot" aria-hidden="true">
-          <span className="lswitch__lever" />
-        </span>
-        <span className="lswitch__screw" aria-hidden="true" />
-      </button>
-    </div>
-  );
+    }, lead);
+  }, []);
 }

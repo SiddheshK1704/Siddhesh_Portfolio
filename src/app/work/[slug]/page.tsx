@@ -7,7 +7,6 @@ import { projects, getProjectBySlug, type Project } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import { GithubIcon } from "@/components/ui/Icons";
 import { Reveal } from "@/components/ui/Reveal";
-import { LightSwitch } from "@/components/hero/LightSwitch";
 import { Screenshot, Section, SectionLabel, Workflow } from "@/components/case-study/parts";
 
 type PageProps = {
@@ -70,8 +69,8 @@ export default async function ProjectPage({ params }: PageProps) {
   return (
     <main className="relative px-6 lg:px-16 pt-24 sm:pt-28 pb-24">
       <div className="max-w-6xl mx-auto w-full">
-        {/* ── Top bar: back + the site's light switch ── */}
-        <div className="flex items-center justify-between">
+        {/* ── Top bar: back link (the theme cord hangs top-right) ── */}
+        <div className="flex items-center">
           <Link
             href="/#work"
             className="inline-flex items-center gap-2 font-pixel text-[9px] leading-none uppercase text-muted transition-colors hover:text-foreground"
@@ -79,7 +78,6 @@ export default async function ProjectPage({ params }: PageProps) {
             <ArrowLeft size={14} aria-hidden="true" />
             Back to work
           </Link>
-          <LightSwitch className="relative" />
         </div>
 
         {/* ── 01 / PROJECT ── */}

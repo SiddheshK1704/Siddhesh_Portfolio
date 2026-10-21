@@ -6,6 +6,7 @@ import { MultilingualIntro } from "@/components/intro/MultilingualIntro";
 import { INTRO_GATE_SCRIPT } from "@/components/intro/introGate";
 import { THEME_SCRIPT } from "@/components/theme/themeScript";
 import { GlobalBackground } from "@/components/reactbits/GlobalBackground";
+import { LampCord } from "@/components/theme/LampCord";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -67,6 +68,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </SmoothScroll>
         </div>
+
+        {/* Theme toggle: a pull cord hanging from the top edge, on every page */}
+        <LampCord />
       </body>
     </html>
   );

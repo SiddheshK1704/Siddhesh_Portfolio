@@ -41,14 +41,11 @@
   --vignette: rgba(2, 3, 6, 0.7);
   --grain-opacity: 0.05;
 
-  /* Hero light switch */
-  --switch-plate: linear-gradient(180deg, #1b1e26, #121419);
-  --switch-edge: rgba(255, 255, 255, 0.09);
-  --switch-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --switch-slot: #06070b;
-  --switch-lever: linear-gradient(180deg, #454a55, #262930);
-  --switch-screw: rgba(255, 255, 255, 0.16);
+  /* Lamp pull cord */
+  --cord-bead: #9aa1b4;
+  --cord-handle: #c3c8d6;
+  --cord-handle-shine: rgba(255, 255, 255, 0.55);
+  --cord-mount: #2a2e3a;
 
   --cartoon-shadow: rgba(0, 0, 0, 0.45);
 
@@ -109,13 +106,10 @@
   --vignette: rgba(120, 110, 92, 0.1);
   --grain-opacity: 0.06;
 
-  --switch-plate: linear-gradient(180deg, #ffffff, #ecebe6);
-  --switch-edge: rgba(17, 18, 23, 0.12);
-  --switch-shadow: 0 8px 16px -8px rgba(40, 36, 28, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  --switch-slot: #d6d3ca;
-  --switch-lever: linear-gradient(180deg, #ffffff, #dedbd3);
-  --switch-screw: rgba(17, 18, 23, 0.22);
+  --cord-bead: #6d6f78;
+  --cord-handle: #3a3c44;
+  --cord-handle-shine: rgba(255, 255, 255, 0.35);
+  --cord-mount: #cfccc3;
 
   --cartoon-shadow: rgba(40, 36, 28, 0.2);
 
@@ -891,34 +885,93 @@ body {
   }
 }
 
-/* ---------- Hero light switch ----------
-   A miniature wall toggle: plate, two screws, a recessed slot and a lever.
-   Only the lever moves (spring, in LightSwitch.tsx); everything else is
-   themed through the --switch-* tokens. */
-.lswitch {
-  /* The wrapper carries the absolute positioning; the switch itself is
-     relative so its enlarged touch target (::before) anchors to it */
-  position: relative;
-  width: 24px;
-  height: 38px;
-  border-radius: 5px;
-  background: var(--switch-plate);
-  box-shadow: var(--switch-shadow), 0 0 0 1px var(--switch-edge);
+/* ---------- Lamp pull cord ----------
+   A beaded chain hanging from the top edge of the viewport, ending in a
+   ring handle (LampCord.tsx). The button is the whole cord; it sways from
+   its top, stretches a little on hover and is pulled down (--pull, set by
+   a spring) when tugged. Themed through the --cord-* tokens. */
+@property --cord-stretch {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+.lamp-cord {
+  --chain-len: 46px;
+  --handle: 14px;
+  position: fixed;
+  top: 0;
+  right: 18px;
+  z-index: 60;
+  width: 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 4px 0;
-  transition: box-shadow 200ms ease, translate 200ms ease;
+  pointer-events: none;
 }
 
-/* "Flip the switch!" — sits to the left of the switch, vertically centred,
-   in the hero's pixel face. Purely decorative (the button is labelled). */
-.lswitch-hint {
+@media (min-width: 1024px) {
+  .lamp-cord {
+    --chain-len: 58px;
+    right: 28px;
+  }
+}
+
+/* Ceiling rose the chain hangs from */
+.lamp-cord__mount {
+  width: 12px;
+  height: 4px;
+  border-radius: 0 0 3px 3px;
+  background: var(--cord-mount);
+}
+
+.lamp-cord__btn {
+  position: relative;
+  width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 8px;
+  pointer-events: auto;
+  transform-origin: 50% 0;
+  border-radius: 6px;
+  transition: --cord-stretch 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: cord-sway 4.2s ease-in-out infinite alternate;
+}
+
+.lamp-cord__btn:hover,
+.lamp-cord__btn:focus-visible {
+  --cord-stretch: 4px;
+  animation-play-state: paused;
+}
+
+/* Ball chain: round beads on a hairline */
+.lamp-cord__chain {
+  width: 5px;
+  height: calc(var(--chain-len) + var(--cord-stretch) + var(--pull, 0) * 1px);
+  background:
+    radial-gradient(circle at 50% 50%, var(--cord-bead) 1.7px, transparent 2.2px) 50% 0 / 5px 5px repeat-y,
+    linear-gradient(var(--cord-bead), var(--cord-bead)) 50% 0 / 1px 100% no-repeat;
+}
+
+.lamp-cord__handle {
+  width: var(--handle);
+  height: var(--handle);
+  margin-top: -1px;
+  border-radius: 9999px;
+  border: 3px solid var(--cord-handle);
+  box-shadow:
+    inset 0 1px 0 var(--cord-handle-shine),
+    0 2px 5px -1px rgba(0, 0, 0, 0.35);
+}
+
+/* "Give it a tug": left of the handle, in the hero's pixel face.
+   Decorative; the button itself carries the accessible label. */
+.lamp-cord__hint {
   position: absolute;
-  right: calc(100% + 12px);
-  top: 50%;
-  translate: 0 -50%;
+  right: calc(100% - 4px);
+  bottom: calc(8px + var(--handle) / 2);
+  translate: 0 50%;
   white-space: nowrap;
   font-family: var(--font-press-start-2p), monospace;
   font-size: 8px;
@@ -932,72 +985,29 @@ body {
   transition: opacity 200ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.lswitch-wrap:hover .lswitch-hint,
-.lswitch-wrap:has(.lswitch:focus-visible) .lswitch-hint {
+.lamp-cord__btn:hover .lamp-cord__hint,
+.lamp-cord__btn:focus-visible .lamp-cord__hint {
   opacity: 1;
   transform: none;
 }
 
 @media (min-width: 1024px) {
-  .lswitch-hint { font-size: 9px; }
+  .lamp-cord__hint { font-size: 9px; }
 }
 
-/* Enlarge the touch target without enlarging the switch */
-.lswitch::before {
-  content: "";
-  position: absolute;
-  inset: -10px -12px;
+@keyframes cord-sway {
+  from { rotate: -2.5deg; }
+  to { rotate: 2.5deg; }
 }
 
-.lswitch:hover {
-  translate: 0 -1px;
-}
-
-.lswitch__screw {
-  width: 3px;
-  height: 3px;
-  border-radius: 9999px;
-  background: var(--switch-screw);
-}
-
-.lswitch__slot {
-  position: relative;
-  width: 10px;
-  height: 16px;
-  border-radius: 3px;
-  background: var(--switch-slot);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
-  display: grid;
-  place-items: center;
-}
-
-/* Down = off (dark), up = on (light). Positioned from <html data-theme>
-   so it is right on first paint; [data-pending] flips it ahead of the
-   sweep. The easing overshoots a hair, like a sprung toggle clicking. */
-.lswitch__lever {
-  --lever-travel: 3.5px;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--switch-lever);
-  box-shadow:
-    0 1px 1.5px rgba(0, 0, 0, 0.45),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.35);
-  translate: 0 var(--lever-travel);
-  transition: translate 260ms cubic-bezier(0.34, 1.45, 0.64, 1);
-}
-
-:root[data-theme="light"] .lswitch__lever,
-.lswitch[data-pending="light"] .lswitch__lever {
-  translate: 0 calc(var(--lever-travel) * -1);
-}
-
-:root[data-theme="light"] .lswitch[data-pending="dark"] .lswitch__lever {
-  translate: 0 var(--lever-travel);
+@media (prefers-reduced-motion: reduce) {
+  .lamp-cord__btn {
+    animation: none !important;
+  }
 }
 
 /* ---------- Theme sweep (View Transitions) ----------
-   LightSwitch.tsx animates ::view-transition-new(root) with an S-shaped
+   useThemeFlip.ts animates ::view-transition-new(root) with an S-shaped
    clip-path. Disable the default crossfade and keep the new theme on top. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
