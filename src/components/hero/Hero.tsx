@@ -19,6 +19,7 @@ import {
 } from "@/components/intro/introGate";
 import LightRays from "@/components/reactbits/LightRays";
 import { CONTACT_DATA } from "@/data/contact";
+import { HeroCircle } from "./HeroCircle";
 import { useTheme } from "@/components/theme/useTheme";
 import {
   identityEnd,
@@ -229,6 +230,13 @@ export function Hero() {
       id="top"
       className="relative min-h-[100svh] flex items-center px-6 lg:px-16 pt-28 pb-20 overflow-hidden"
     >
+      {/* Hidden blue circle along the top edge; drops in on hover */}
+      <HeroCircle delay={entranceDelay}>
+        <span className="absolute inset-x-0 bottom-[18%] text-center font-pixel text-[10px] lg:text-xs text-white">
+          hi!
+        </span>
+      </HeroCircle>
+
       <div className="hero-emerge relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
         {/* ── Typography & actions ── */}
         <div className="lg:col-span-8 flex flex-col">

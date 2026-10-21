@@ -8,6 +8,7 @@ import {
   useScroll,
   useTransform,
   useMotionValueEvent,
+  useReducedMotion,
 } from "motion/react";
 import { cn } from "@/lib/utils";
 import {
@@ -58,7 +59,9 @@ export function Navbar() {
       : clamp01((s - FALLBACK_START) / FALLBACK_RANGE);
   });
 
-  const surfaceY = useTransform(surface, [0, 1], [-6, 0]);
+  // Reduced motion: fade only, no slide.
+  const reduceMotion = useReducedMotion();
+  const surfaceY = useTransform(surface, [0, 1], reduceMotion ? [0, 0] : [-6, 0]);
 
   useMotionValueEvent(surface, "change", (v) => {
     const next = v > 0.05;
