@@ -22,7 +22,7 @@ const GEOMETRY = {
 /** Height of the hover / tap zone along the hero's top edge at rest. */
 const REST_ZONE = 64;
 /** How long the circle stays out after the cursor leaves it (ms). */
-const CLOSE_DELAY = 5000;
+const CLOSE_DELAY = 3500;
 const DROP_SPRING = { type: "spring", stiffness: 420, damping: 32 } as const;
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
