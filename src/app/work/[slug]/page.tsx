@@ -200,20 +200,42 @@ export default async function ProjectPage({ params }: PageProps) {
             <Reveal delay={0.06} className="mt-10">
               <Screenshot shot={primary} sizes="(min-width: 1280px) 1152px, calc(100vw - 48px)" />
             </Reveal>
-            {supporting.map((s, i) => (
-              <Reveal key={s.src} delay={0.06} className="mt-12 sm:mt-16">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-end">
-                  <div className={`lg:col-span-8 ${i % 2 === 0 ? "lg:col-start-5" : ""}`}>
-                    <Screenshot shot={s} sizes="(min-width: 1024px) 760px, calc(100vw - 48px)" hideCaption />
+            {supporting.map((s, i) => {
+              // Tall shots (e.g. a side panel) get a narrow, centred column
+              // with the caption beside them instead of the wide slot.
+              const portrait = s.height > s.width;
+              const right = i % 2 === 0;
+              return (
+                <Reveal key={s.src} delay={0.06} className="mt-12 sm:mt-16">
+                  <div
+                    className={`grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 ${portrait ? "items-center" : "items-end"}`}
+                  >
+                    <div
+                      className={
+                        portrait
+                          ? "w-full max-w-[320px] mx-auto lg:max-w-none lg:mx-0 lg:col-span-4 lg:col-start-7"
+                          : `lg:col-span-8 ${right ? "lg:col-start-5" : ""}`
+                      }
+                    >
+                      <Screenshot
+                        shot={s}
+                        sizes={portrait ? "(min-width: 1024px) 368px, 320px" : "(min-width: 1024px) 760px, calc(100vw - 48px)"}
+                        hideCaption
+                      />
+                    </div>
+                    {s.caption && (
+                      <p
+                        className={`lg:col-span-4 text-sm text-muted leading-relaxed ${
+                          portrait ? "lg:row-start-1 lg:col-start-3" : right ? "lg:row-start-1 lg:col-start-1" : ""
+                        }`}
+                      >
+                        {s.caption}
+                      </p>
+                    )}
                   </div>
-                  {s.caption && (
-                    <p className={`lg:col-span-4 text-sm text-muted leading-relaxed ${i % 2 === 0 ? "lg:row-start-1 lg:col-start-1" : ""}`}>
-                      {s.caption}
-                    </p>
-                  )}
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </section>
         )}
 

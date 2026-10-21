@@ -39,10 +39,10 @@ export const caseStudies: Record<string, CaseStudy> = {
     category: "AI / RAG",
     heroTech: ["FastAPI", "FAISS", "Sentence Transformers", "Groq API", "Supabase"],
     heroShot: {
-      src: "/projects/lawtalk/hero.png",
+      src: "/projects/lawtalk/landing.png",
       width: 1917,
       height: 927,
-      alt: "LawTalk AI landing page: 'Justice, Reimagined by Intelligence.' beside a statue of Lady Justice",
+      alt: "LawTalk landing page: 'The law, without the fog.' beside a statue of Lady Justice",
     },
     overview: [
       "LawTalk is an AI legal assistant that answers from real legal documents instead of from the model's memory alone.",
@@ -76,18 +76,25 @@ export const caseStudies: Record<string, CaseStudy> = {
     ],
     gallery: [
       {
-        src: "/projects/lawtalk/screenshot1.png",
+        src: "/projects/lawtalk/chat.png",
         width: 1917,
         height: 927,
-        alt: "LawTalk chat: a tenant-rights question answered with statutes, notice periods and next steps, with a history sidebar",
-        caption: "The chat: a tenancy question answered with the relevant acts, notice periods and next steps — history on the left.",
+        alt: "LawTalk chat: a question about the Consumer Protection Act answered with numbered citations, with a conversation history sidebar",
+        caption: "The chat: a question on the Consumer Protection Act, answered with numbered citations back to the source passages — history on the left.",
       },
       {
-        src: "/projects/lawtalk/screenshot2.png",
+        src: "/projects/lawtalk/evidence-panel.png",
+        width: 432,
+        height: 927,
+        alt: "LawTalk evidence panel listing cited passages from the Constitution of India with article and page tags",
+        caption: "The evidence panel: every citation opens the retrieved passage, tagged with its source, article and page, so answers can be checked.",
+      },
+      {
+        src: "/projects/lawtalk/signup.png",
         width: 1917,
         height: 927,
-        alt: "LawTalk login modal over the blurred landing page",
-        caption: "Supabase-backed login, so chats persist per user.",
+        alt: "LawTalk 'Open your workspace.' sign-up modal in a circle over the dimmed landing page",
+        caption: "Supabase-backed sign-up, so chats persist per user.",
       },
     ],
     learned: [
