@@ -20,6 +20,7 @@ import {
 import LightRays from "@/components/reactbits/LightRays";
 import { CONTACT_DATA } from "@/data/contact";
 import { HeroCircle } from "./HeroCircle";
+import { HeroMascot } from "./mascot/HeroMascot";
 import { useTheme } from "@/components/theme/useTheme";
 import {
   identityEnd,
@@ -232,9 +233,7 @@ export function Hero() {
     >
       {/* Hidden blue circle along the top edge; drops in on hover */}
       <HeroCircle delay={entranceDelay}>
-        <span className="absolute inset-x-0 bottom-[18%] text-center font-pixel text-[10px] lg:text-xs text-white">
-          hi!
-        </span>
+        <HeroMascot />
       </HeroCircle>
 
       <div className="hero-emerge relative max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-8 items-end">
@@ -299,42 +298,47 @@ export function Hero() {
             }
             className="mt-10 flex flex-wrap items-center gap-3"
           >
-            <SpecularButton
-              size="sm"
-              radius={4}
-              tint="var(--color-foreground)"
-              tintOpacity={1}
-              textColor="var(--color-background)"
-              baseColor={btn.primaryBase}
-              lineColor={btn.line}
-              intensity={0.9}
-              proximity={150}
-              shineSize={12}
-              shineFade={36}
-              className="font-sans tracking-tight"
-              onClick={() => scrollToSection("work")}
-            >
-              View work
-            </SpecularButton>
+            {/* data-mascot-wink: the hero mascot winks when these are hovered */}
+            <span data-mascot-wink className="inline-flex">
+              <SpecularButton
+                size="sm"
+                radius={4}
+                tint="var(--color-foreground)"
+                tintOpacity={1}
+                textColor="var(--color-background)"
+                baseColor={btn.primaryBase}
+                lineColor={btn.line}
+                intensity={0.9}
+                proximity={150}
+                shineSize={12}
+                shineFade={36}
+                className="font-sans tracking-tight"
+                onClick={() => scrollToSection("work")}
+              >
+                View work
+              </SpecularButton>
+            </span>
 
-            <SpecularButton
-              size="sm"
-              radius={4}
-              tint="var(--color-foreground)"
-              tintOpacity={0.03}
-              blur={6}
-              textColor="var(--color-foreground)"
-              baseColor={btn.secondaryBase}
-              lineColor={btn.line}
-              intensity={0.85}
-              proximity={150}
-              shineSize={12}
-              shineFade={36}
-              className="font-sans tracking-tight"
-              onClick={() => scrollToSection("contact")}
-            >
-              Get in touch
-            </SpecularButton>
+            <span data-mascot-wink className="inline-flex">
+              <SpecularButton
+                size="sm"
+                radius={4}
+                tint="var(--color-foreground)"
+                tintOpacity={0.03}
+                blur={6}
+                textColor="var(--color-foreground)"
+                baseColor={btn.secondaryBase}
+                lineColor={btn.line}
+                intensity={0.85}
+                proximity={150}
+                shineSize={12}
+                shineFade={36}
+                className="font-sans tracking-tight"
+                onClick={() => scrollToSection("contact")}
+              >
+                Get in touch
+              </SpecularButton>
+            </span>
           </motion.div>
         </div>
 

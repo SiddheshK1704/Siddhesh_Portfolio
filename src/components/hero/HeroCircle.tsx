@@ -25,6 +25,9 @@ const DROP_SPRING = { type: "spring", stiffness: 420, damping: 32 } as const;
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
 export type CirclePhase = "closed" | "opening" | "open" | "closing";
+/** "opened": the drop just finished. "poked": the open circle was clicked. */
+export type CircleEvent = "opened" | "poked";
+type CircleListener = (event: CircleEvent) => void;
 
 type HeroCircleState = {
   phase: CirclePhase;
@@ -34,6 +37,8 @@ type HeroCircleState = {
   pokedTick: number;
   /** Diameter of the open circle (px), for sizing its contents. */
   size: number;
+  /** Listen for circle events; returns an unsubscribe function. */
+  subscribe: (listener: CircleListener) => () => void;
 };
 
 const HeroCircleContext = createContext<HeroCircleState>({
@@ -41,6 +46,7 @@ const HeroCircleContext = createContext<HeroCircleState>({
   openedTick: 0,
   pokedTick: 0,
   size: GEOMETRY.desktop.size,
+  subscribe: () => () => {},
 });
 
 /** Open/closed state of the hero circle, for whatever sits inside it. */
@@ -82,6 +88,15 @@ export function HeroCircle({
   const [pokedTick, setPokedTick] = useState(0);
   const zoneRef = useRef<HTMLButtonElement>(null);
   const lastPointer = useRef<string>("mouse");
+  const listeners = useRef(new Set<CircleListener>());
+  const emit = (event: CircleEvent) => listeners.current.forEach((l) => l(event));
+  const subscribe = useCallback((listener: CircleListener) => {
+    const set = listeners.current;
+    set.add(listener);
+    return () => {
+      set.delete(listener);
+    };
+  }, []);
 
   const g = desktop ? GEOMETRY.desktop : GEOMETRY.mobile;
   const domeWidth = g.size * g.scale;
@@ -124,14 +139,17 @@ export function HeroCircle({
     const r = zoneRef.current!.getBoundingClientRect();
     const dx = e.clientX - (r.left + r.width / 2);
     const dy = e.clientY - (r.top + g.top + g.size / 2);
-    if (Math.hypot(dx, dy) <= g.size / 2) setPokedTick((t) => t + 1);
+    if (Math.hypot(dx, dy) <= g.size / 2) {
+      setPokedTick((t) => t + 1);
+      emit("poked");
+    }
     else if (lastPointer.current !== "mouse") show(false);
   };
 
   const transition = reduceMotion ? { duration: 0 } : DROP_SPRING;
 
   return (
-    <HeroCircleContext.Provider value={{ phase, openedTick, pokedTick, size: g.size }}>
+    <HeroCircleContext.Provider value={{ phase, openedTick, pokedTick, size: g.size, subscribe }}>
       <div className="absolute inset-x-0 top-0 z-[2] px-6 lg:px-16 pointer-events-none">
         <div className="relative max-w-6xl mx-auto">
           <motion.button
@@ -166,6 +184,7 @@ export function HeroCircle({
                 if (open) {
                   setPhase("open");
                   setOpenedTick((t) => t + 1);
+                  emit("opened");
                 } else {
                   setPhase("closed");
                 }
@@ -180,7 +199,7 @@ export function HeroCircle({
               animate={
                 open
                   ? { y: 0, opacity: 1, transition: { y: transition, opacity: { duration: reduceMotion ? 0 : 0.22, delay: reduceMotion ? 0 : 0.06 } } }
-                  : { y: restY, opacity: 0, transition: { y: transition, opacity: { duration: reduceMotion ? 0 : 0.12 } } }
+                  : { y: restY, opacity: 0, transition: { y: transition, opacity: { duration: reduceMotion ? 0 : 0.2 } } }
               }
             >
               {children}
