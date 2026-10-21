@@ -20,7 +20,6 @@ import {
 import LightRays from "@/components/reactbits/LightRays";
 import { CONTACT_DATA } from "@/data/contact";
 import { useTheme } from "@/components/theme/useTheme";
-import { LightSwitch } from "./LightSwitch";
 import {
   identityEnd,
   DOCK_AT,
@@ -348,9 +347,6 @@ export function Hero() {
                 className="hero-rays absolute left-1/2 -translate-x-1/2 z-0 -top-[120px] w-[420px] h-[440px] [--rays-opacity:0.55] lg:-top-[210px] lg:w-[600px] lg:h-[640px] lg:[--rays-opacity:0.8]"
               />
             )}
-
-            {/* A tiny physical detail, set apart from the cartoon */}
-            <LightSwitch className="absolute -top-10 -right-12 sm:-right-16 lg:-top-12 lg:-right-20 z-10" />
 
             <motion.div
               initial={{ opacity: 0, y: 14 }}

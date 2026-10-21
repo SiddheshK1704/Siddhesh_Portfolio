@@ -73,7 +73,7 @@ export function Navbar() {
       data-lenis-prevent
       // Hidden navbar must not be reachable by keyboard or pointer.
       inert={!isVisible}
-      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-3.5 px-4 pointer-events-none"
+      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-3.5 pl-4 pr-16 lg:pr-4 pointer-events-none"
     >
       <nav
         className="relative w-full max-w-4xl pointer-events-auto"
@@ -141,7 +141,7 @@ export function Navbar() {
         <div
           id="mobile-menu"
           className={cn(
-            "md:hidden absolute top-16 w-[calc(100%-2rem)] max-w-4xl pointer-events-auto",
+            "md:hidden absolute top-16 left-4 right-16 max-w-4xl pointer-events-auto",
             "bg-[var(--glass-bg-strong)] backdrop-blur-2xl border border-[color:var(--glass-border)] rounded-[var(--radius-md)] shadow-[var(--glass-shadow)]",
             "flex flex-col p-5 gap-4"
           )}
