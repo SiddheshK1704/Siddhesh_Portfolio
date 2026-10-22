@@ -20,23 +20,24 @@ Outside of engineering, my interests include motorsports (Formula 1 & Max Versta
 
 ## Selected Work
 
-### 01 / LawTalk
+### 01 / Design Shelf
+*AI Reference Library for Designers*
+- An AI reference library for designers, searchable by feel. Gemini tags each image by form, material, colour and mood through a lens for the discipline (industrial, vehicle, CMF, UI/UX, graphic, interiors, fashion, packaging or custom), and a plain-English search finds it again.
+- **Architecture**: React + TypeScript app calling Gemini directly from the browser with the user's own key, for vision tagging, embeddings and an assistant. Hybrid search (embeddings plus a keyword boost); the library lives in IndexedDB, or syncs to Supabase (Postgres + pgvector, Auth, Storage) when signed in.
+- **Stack**: React, TypeScript, Vite, Google Gemini API, Supabase, IndexedDB.
+- **Live Demo**: [design-shelf-phi.vercel.app](https://design-shelf-phi.vercel.app/)
+
+### 02 / LawTalk
 *RAG-Based AI Legal Assistant*
 - A full-stack legal chatbot designed to ground responses in real statutory and case documents rather than relying on LLM memory alone, drastically mitigating hallucinations.
 - **Architecture**: FastAPI backend embedding queries with Sentence Transformers, searching a FAISS vector index for legal document chunks, and generating fast grounded answers via Groq LLM API. Supabase handles authentication and persistent chat history.
 - **Stack**: FastAPI, FAISS, Sentence Transformers, Groq API, Supabase, Tailwind CSS.
 
-### 02 / QuickSign
+### 03 / QuickSign
 *Real-Time Sign Language Detection*
 - A computer vision web application that recognizes English sign-language alphabet gestures live from a webcam feed without specialized hardware.
 - **Architecture**: Custom-trained YOLOv8 object detection model served via Flask, streaming video and predictions asynchronously to the browser.
 - **Stack**: Python, YOLOv8, Ultralytics, Flask, OpenCV.
-
-### 03 / Xplainify
-*AI-Powered Webpage and Code Understanding*
-- An AI-powered Chrome extension that helps students and developers understand technical webpages and code faster with AI-generated summaries and beginner-friendly explanations.
-- **Architecture**: Chrome Extension Manifest V3 with direct browser-to-Gemini REST API calls using the user's locally stored API key. Features dynamic Gemini model discovery, prompt-injection-aware content sanitization, and context-menu code explanations with zero intermediary backend.
-- **Stack**: Chrome MV3, Vanilla JavaScript, Google Gemini REST API, Chrome Storage API, Chrome Scripting API.
 
 ### 04 / Slipstream
 *Motorsport-Themed Automotive Showcase*

@@ -68,9 +68,9 @@ const techLogos = TECH_STACK.map(({ name, Icon, color }) => ({
 
 // Short category for each project card (existing project descriptors)
 const CATEGORY: Record<string, string> = {
+  "design-shelf": "AI / Design Tool",
   lawtalk: "AI / RAG",
   quicksign: "Computer Vision",
-  xplainify: "Developer Tool",
   slipstream: "Frontend",
 };
 
